@@ -7,7 +7,6 @@ const navLinks = [
   { href: '#fitur', label: 'Fitur' },
   { href: '#cara-kerja', label: 'Cara Kerja' },
   { href: '#unduh', label: 'Unduh App' },
-  { href: '/privacy', label: 'Privasi', isRouterLink: true },
 ]
 
 export default function Navbar() {
