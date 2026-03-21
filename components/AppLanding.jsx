@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=id.bettazon.app';
@@ -26,17 +25,49 @@ const typeConfig = {
 };
 
 export default function AppLanding({ type, id }) {
-  const [status, setStatus] = useState('redirecting'); // 'redirecting' | 'download'
+  // 'redirecting' = sedang mencoba buka app
+  // 'fallback'    = Android lama / custom browser tidak support intent URI
+  // 'desktop'     = bukan mobile, tampilkan link download langsung
+  const [status, setStatus] = useState('redirecting');
   const config = typeConfig[type] ?? typeConfig.product;
 
   useEffect(() => {
-    // Try opening the app via custom URL scheme
-    const schemeUrl = `bettazon://${type}/${id}`;
-    window.location.href = schemeUrl;
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
 
-    // If still on this page after 2.5s, the app is probably not installed
-    const timer = setTimeout(() => setStatus('download'), 2500);
-    return () => clearTimeout(timer);
+    if (isAndroid) {
+      // Android Intent URI:
+      // → kalau app SUDAH ada: Chrome langsung buka app
+      // → kalau app BELUM ada: Chrome otomatis redirect ke Play Store (via browser_fallback_url)
+      // Tidak perlu setTimeout, semua ditangani Android OS/Chrome
+      const fallbackUrl = encodeURIComponent(PLAY_STORE_URL);
+      window.location.href =
+        `intent://${type}/${id}` +
+        `#Intent;scheme=bettazon;package=id.bettazon.app;` +
+        `S.browser_fallback_url=${fallbackUrl};end`;
+
+      // Safety net: kalau browser lama tidak support intent://, tampilkan tombol manual setelah 3s
+      const timer = setTimeout(() => setStatus('fallback'), 3000);
+      return () => clearTimeout(timer);
+    } else if (isIOS) {
+      // iOS: coba buka custom scheme via hidden iframe
+      // (menghindari dialog "Cannot Open Page" yang muncul kalau pakai window.location langsung)
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
+      iframe.src = `bettazon://${type}/${id}`;
+      document.body.appendChild(iframe);
+
+      // Kalau app tidak ada, setelah 2.5s langsung redirect ke App Store
+      const timer = setTimeout(() => {
+        document.body.removeChild(iframe);
+        window.location.href = APP_STORE_URL;
+      }, 2500);
+      return () => clearTimeout(timer);
+    } else {
+      // Desktop: tampilkan link download langsung tanpa animasi redirect
+      setStatus('desktop');
+    }
   }, [type, id]);
 
   return (
@@ -54,6 +85,7 @@ export default function AppLanding({ type, id }) {
       {/* Card */}
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-sm w-full text-center">
         {status === 'redirecting' ? (
+          // Ditampilkan saat mencoba membuka app (Android/iOS)
           <>
             <div className="flex justify-center mb-4">
               <div className="w-12 h-12 border-4 border-[#FE735C]/30 border-t-[#FE735C] rounded-full animate-spin" />
@@ -62,10 +94,11 @@ export default function AppLanding({ type, id }) {
               Membuka Bettazon...
             </h2>
             <p className="text-gray-500 text-sm">
-              Mengarahkan ke aplikasi Bettazon.
+              Kalau sudah install, aplikasi akan terbuka otomatis.
             </p>
           </>
         ) : (
+          // Ditampilkan: (a) desktop, atau (b) Android browser lama (fallback)
           <>
             <div className="text-5xl mb-4">{config.icon}</div>
             <h2 className="text-xl font-bold text-gray-800 mb-2">
@@ -73,20 +106,22 @@ export default function AppLanding({ type, id }) {
             </h2>
             <p className="text-gray-500 text-sm mb-6">{config.desc}</p>
 
-            {/* Open in app button (if app somehow installed but scheme didn't trigger) */}
-            <a
-              href={`bettazon://${type}/${id}`}
-              className="block w-full bg-[#008080] hover:bg-[#006666] text-white font-semibold py-3 rounded-xl mb-3 transition-colors"
-            >
-              🔗 Buka di Aplikasi
-            </a>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-xs text-gray-400">belum punya aplikasi?</span>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
+            {/* Tombol "Buka di Aplikasi" hanya untuk fallback Android lama */}
+            {status === 'fallback' && (
+              <>
+                <a
+                  href={`bettazon://${type}/${id}`}
+                  className="block w-full bg-[#008080] hover:bg-[#006666] text-white font-semibold py-3 rounded-xl mb-4 transition-colors"
+                >
+                  🔗 Buka di Aplikasi
+                </a>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-gray-400">belum punya aplikasi?</span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+              </>
+            )}
 
             {/* Play Store */}
             <a
