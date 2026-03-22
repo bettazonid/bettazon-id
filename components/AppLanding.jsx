@@ -42,8 +42,10 @@ export default function AppLanding({ type, id }) {
       // → kalau app BELUM ada: Chrome otomatis redirect ke Play Store (via browser_fallback_url)
       // Tidak perlu setTimeout, semua ditangani Android OS/Chrome
       const fallbackUrl = encodeURIComponent(PLAY_STORE_URL);
+      // Gunakan bettazon.id sebagai host agar Flutter GoRouter menerima path /type/id yang benar.
+      // Hindari bettazon://type/id karena 'type' terbaca sebagai HOST (bukan path) oleh URI parser.
       window.location.href =
-        `intent://${type}/${id}` +
+        `intent://bettazon.id/${type}/${id}` +
         `#Intent;scheme=bettazon;package=id.bettazon.app;` +
         `S.browser_fallback_url=${fallbackUrl};end`;
 
@@ -55,7 +57,7 @@ export default function AppLanding({ type, id }) {
       // (menghindari dialog "Cannot Open Page" yang muncul kalau pakai window.location langsung)
       const iframe = document.createElement('iframe');
       iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
-      iframe.src = `bettazon://${type}/${id}`;
+      iframe.src = `bettazon://bettazon.id/${type}/${id}`;
       document.body.appendChild(iframe);
 
       // Kalau app tidak ada, setelah 2.5s langsung redirect ke App Store
@@ -110,7 +112,7 @@ export default function AppLanding({ type, id }) {
             {status === 'fallback' && (
               <>
                 <a
-                  href={`bettazon://${type}/${id}`}
+                  href={`bettazon://bettazon.id/${type}/${id}`}
                   className="block w-full bg-[#008080] hover:bg-[#006666] text-white font-semibold py-3 rounded-xl mb-4 transition-colors"
                 >
                   🔗 Buka di Aplikasi
