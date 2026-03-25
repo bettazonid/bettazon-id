@@ -1,36 +1,39 @@
-# Bettazon.id – Project Documentation Repo
+# Bettazon.id Web + Docs
 
-## What This Repo Is
-This is the **documentation and planning repo** for the Bettazon.id project.
-It contains no runnable code. All architecture decisions, specs, schemas, and feature plans live here.
+## Purpose
+This repo is a hybrid of:
+- a small Next.js marketing/deep-link site in `app/` and `components/`
+- the product/architecture source of truth in `docs/`
 
-## Other Repos
-| Repo | Description | Language |
-|---|---|---|
-| `bettazon-id-be` | Backend REST API | Node.js 20, Express, MongoDB |
-| `bettazon-id-app` | Mobile app | Flutter (Provider, go_router) |
+If code and docs disagree about platform behavior, prefer `docs/` for intended business rules and use the app/backend repos to verify implementation status.
 
-## Docs Index
-| File | Purpose |
-|---|---|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, service boundaries |
-| [docs/TECH_STACK.md](docs/TECH_STACK.md) | All technology choices with rationale |
-| [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | MongoDB models, reuse status from setorin |
-| [docs/API_DESIGN.md](docs/API_DESIGN.md) | REST endpoint conventions, all route groups |
-| [docs/FEATURES.md](docs/FEATURES.md) | Feature checklist by phase |
-| [docs/AUCTION_SPEC.md](docs/AUCTION_SPEC.md) | Page auction + live auction state machines |
-| [docs/LIVE_STREAMING_SPEC.md](docs/LIVE_STREAMING_SPEC.md) | LiveKit setup, token gen, socket events |
-| [docs/SHIPPING_SPEC.md](docs/SHIPPING_SPEC.md) | Domestic couriers + international transshipper flow |
-| [docs/FISH_CATEGORIES.md](docs/FISH_CATEGORIES.md) | Fish category taxonomy |
-| [docs/TIMELINE.md](docs/TIMELINE.md) | Development phases and milestones |
+## What the web app actually does
+- `app/page.jsx` is a static landing page with large inline sections and Tailwind utility classes.
+- `app/product/[slug]/page.jsx`, `app/auction/[id]/page.jsx`, and `app/live/[id]/page.jsx` only generate metadata and render `components/AppLanding.jsx`.
+- `components/AppLanding.jsx` is the core behavior: mobile deep-link handoff to the Flutter app with Android intent fallback and iOS custom-scheme fallback.
+- `app/privacy/page.jsx` is a long static legal page; keep edits content-focused and do not over-componentize it unless repeated patterns justify it.
 
-## Project Context
-Bettazon.id is an ornamental fish (ikan hias) marketplace for Indonesia. The backend was cloned from `setorin-id-be` (waste management platform) and is being adapted.
+## Cross-repo contract
+- Deep-link URLs here must stay aligned with Flutter parsing in `bettazon-id-app/lib/router.dart` (`deepLinkToPath`).
+- Use paths shaped like `bettazon://bettazon.id/<type>/<id>` and Android intent URLs with host `bettazon.id`; do not switch to `bettazon://<type>/<id>`.
+- The current App Store URL in `components/AppLanding.jsx` is a placeholder; do not treat it as production truth without confirmation.
 
-Key differentiators:
-- **Live streaming with live auction** (LiveKit, self-hosted)
-- **Page auction** (timed, with auto-extend)
-- **International shipping** via transshipper partners in Jakarta
-- Two user roles: `buyer` and `seller` (no RT/RW/collector from setorin)
+## Styling conventions
+- This repo uses plain App Router components with Tailwind; there is no shared design system layer.
+- Brand colors are repeated directly in JSX: `#FE735C` and `#008080`.
+- Prefer matching the current utility-first style over introducing CSS modules or new abstraction layers.
 
-When writing docs or making architecture decisions, refer to these source-of-truth files rather than inferring from code.
+## Metadata and SEO
+- Route-level metadata lives in `app/layout.js` and per-page `generateMetadata` functions.
+- When adding public pages, set Indonesian copy, `metadataBase`, and Open Graph fields consistently with existing route pages.
+
+## Docs workflow
+- Start architecture/product work from `docs/ARCHITECTURE.md`, `docs/API_DESIGN.md`, `docs/AUCTION_SPEC.md`, `docs/LIVE_STREAMING_SPEC.md`, and `docs/SHIPPING_SPEC.md`.
+- This project is an ornamental fish marketplace with direct buy, page auctions, live auctions, escrow, and domestic/international shipping.
+- Backend heritage from Setorin matters historically, but new docs should use Bettazon roles and flows (`buyer`, `seller`, live commerce) rather than legacy waste-management terminology.
+
+## Developer workflow
+- Install with `npm install`.
+- Run locally with `npm run dev`.
+- Validate production build with `npm run build`.
+- Lint with `npm run lint`.

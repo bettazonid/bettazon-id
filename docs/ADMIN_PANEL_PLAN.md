@@ -322,7 +322,7 @@ PATCH /api/admin/support/chats/:chatId/flag      → Flag chat untuk review lebi
 
 | Phase | Konten | Estimasi |
 |---|---|---|
-| Phase 1 | Auth + Layout + Foundation | 1–2 hari |
+| Phase 1 | Auth + Layout + Foundation | 1–2 hari | done
 | Phase 2 | Dashboard + Withdrawal | 2–3 hari |
 | Phase 3 | Product + Order | 2–3 hari |
 | Phase 4 | User Management | 1–2 hari |

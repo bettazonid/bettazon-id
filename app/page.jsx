@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 
 // ─── HERO ────────────────────────────────────────────────────────────────────
 function HeroSection() {
@@ -398,6 +399,76 @@ function SellerSection() {
   )
 }
 
+// ─── TRUST & SUPPORT ─────────────────────────────────────────────────────────
+function TrustSupportSection() {
+  const cards = [
+    {
+      title: 'Pembayaran Aman',
+      description:
+        'Bettazon.id menggunakan iPaymu sebagai metode pembayaran utama untuk top up wallet dan transaksi. Sistem escrow melindungi setiap transaksi pembeli dan penjual.',
+      ctaLabel: 'Lihat FAQ',
+      ctaHref: '/faq',
+    },
+    {
+      title: 'Refund & Kebijakan',
+      description:
+        'Transaksi yang memenuhi syarat refund diproses sesuai status order, hasil verifikasi, dan kebijakan Bettazon.id.',
+      ctaLabel: 'Refund Policy',
+      ctaHref: '/refund-policy',
+    },
+    {
+      title: 'Bantuan & Legal',
+      description:
+        'Hubungi support@bettazon.id untuk bantuan transaksi dan privacy@bettazon.id untuk pertanyaan privasi. Syarat layanan tersedia publik di website ini.',
+      ctaLabel: 'Syarat & Ketentuan',
+      ctaHref: '/terms',
+    },
+  ]
+
+  return (
+    <section className="py-20 sm:py-24 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-[#FE735C]/10 text-[#FE735C] px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            🛡️ Pembayaran, Legal & Bantuan
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Informasi Penting untuk Pengguna Bettazon.id
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Semua informasi penting mengenai metode pembayaran, refund, syarat layanan, dan bantuan pelanggan tersedia secara publik di website Bettazon.id.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {cards.map((card) => (
+            <div key={card.title} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{card.title}</h3>
+              <p className="text-gray-600 leading-relaxed mb-5">{card.description}</p>
+              <Link
+                href={card.ctaHref}
+                className="inline-flex items-center gap-2 text-[#008080] hover:text-[#006666] font-semibold"
+              >
+                {card.ctaLabel}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-[#008080]/20 bg-[#008080]/5 p-6 text-sm text-gray-700">
+          <p className="font-semibold text-gray-900 mb-2">Kontak publik</p>
+          <p>Support umum: <a href="mailto:support@bettazon.id" className="text-[#008080] font-medium hover:underline">support@bettazon.id</a></p>
+          <p>Pertanyaan privasi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">privacy@bettazon.id</a></p>
+          <p>Wilayah layanan: Indonesia</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
 function DownloadSection() {
   return (
@@ -446,6 +517,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <LiveHighlightSection />
         <SellerSection />
+        <TrustSupportSection />
         <DownloadSection />
       </main>
       <Footer />

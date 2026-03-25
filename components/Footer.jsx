@@ -90,14 +90,29 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
+                <Link href="/faq" className="hover:text-[#FE735C] transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-[#FE735C] transition-colors">
                   Kebijakan Privasi
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-[#FE735C] transition-colors">
+                <Link href="/terms" className="hover:text-[#FE735C] transition-colors">
                   Syarat & Ketentuan
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund-policy" className="hover:text-[#FE735C] transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/company-info" className="hover:text-[#FE735C] transition-colors">
+                  Informasi Perusahaan
+                </Link>
               </li>
               <li>
                 <a
@@ -114,6 +129,16 @@ export default function Footer() {
                 >
                   Pertanyaan Privasi
                 </a>
+              </li>
+              <li className="text-gray-500 pt-1">
+                Pembayaran diproses melalui iPaymu. Layanan tersedia untuk seluruh Indonesia.
+              </li>
+              <li className="text-gray-500 pt-2 text-xs border-t border-gray-700 mt-3 leading-relaxed">
+                <strong>Bettazon.id</strong><br />
+                Jl. Husin Basri Perumahan Grand Berdikari Blok G16 Rt/Rw. 002/005<br />
+                Kel. Sukamulya, Kec. Sematang Borang<br />
+                Palembang, Sumatera Selatan 30162<br />
+                +62 821 8628 7929<br />
               </li>
             </ul>
           </div>
