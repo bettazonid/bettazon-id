@@ -9,6 +9,8 @@ const menus = [
   { href: '/admin/withdrawals', label: 'Penarikan' },
   { href: '/admin/products', label: 'Produk' },
   { href: '/admin/orders', label: 'Pesanan' },
+  { href: '/admin/emails', label: 'Inbox Email' },
+  { href: '/admin/emails/sent', label: 'Sent/Outbox' },
   { href: '/admin/users', label: 'Pengguna' },
   { href: '/admin/transactions', label: 'Transaksi' },
   { href: '/admin/cron-jobs', label: 'Cron Jobs' },
