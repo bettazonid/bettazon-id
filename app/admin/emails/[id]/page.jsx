@@ -96,6 +96,16 @@ export default function AdminEmailDetailPage() {
             {email.text || '(Tidak ada konten text)'}
           </pre>
         </div>
+
+        {!email.text && email.html ? (
+          <div>
+            <p className="text-sm text-gray-600 mb-2">Isi Email (HTML)</p>
+            <div
+              className="rounded-lg bg-gray-50 border border-gray-200 p-4 text-sm text-gray-800 break-words"
+              dangerouslySetInnerHTML={{ __html: email.html }}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   )
