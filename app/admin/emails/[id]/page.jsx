@@ -92,9 +92,22 @@ export default function AdminEmailDetailPage() {
 
         <div>
           <p className="text-sm text-gray-600 mb-2">Isi Email (Text)</p>
-          <pre className="rounded-lg bg-gray-50 border border-gray-200 p-4 text-sm text-gray-800 whitespace-pre-wrap break-words">
-            {email.text || '(Tidak ada konten text)'}
-          </pre>
+          <div className="rounded-lg bg-gray-50 border border-gray-200 p-4">
+            {email.text ? (
+              <pre className="text-sm text-gray-800 whitespace-pre-wrap break-words">
+                {email.text}
+              </pre>
+            ) : (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-blue-700 text-sm">
+                <p className="font-medium mb-1">ℹ️ Konten email tidak tersedia</p>
+                <p className="text-xs">
+                  Resend inbound webhook hanya mengirim metadata (from, to, subject). 
+                  Body content memerlukan setup SMTP forwarding. 
+                  Hubungi tim untuk konfigurasi lebih lanjut.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         {!email.text && email.html ? (
