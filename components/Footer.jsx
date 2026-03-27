@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -9,12 +10,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           {/* Brand */}
           <div className="md:col-span-5">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🐠</span>
-              <span className="text-xl font-bold">
-                <span className="text-[#FE735C]">Bettazon</span>
-                <span className="text-[#008080]">.id</span>
-              </span>
+            <div className="flex items-center mb-5">
+              <Image
+                src="/assets/images/logo-white.png"
+                alt="Bettazon.id"
+                width={260}
+                height={72}
+                className="h-12 md:h-14 w-auto object-contain"
+                priority
+              />
             </div>
             <p className="text-sm leading-relaxed text-gray-500 max-w-xs">
               Platform jual beli ikan hias terlengkap di Indonesia. Temukan ribuan jenis ikan hias
@@ -116,7 +120,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@bettazon.id"
+                  href="mailto:official@bettazon.id"
                   className="hover:text-[#FE735C] transition-colors"
                 >
                   Hubungi Kami
@@ -124,7 +128,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:privacy@bettazon.id"
+                  href="mailto:official@bettazon.id"
                   className="hover:text-[#FE735C] transition-colors"
                 >
                   Pertanyaan Privasi

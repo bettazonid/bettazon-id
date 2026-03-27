@@ -40,7 +40,7 @@ const faqs = [
   {
     question: 'Bagaimana jika saya butuh bantuan terkait order atau pembayaran?',
     answer:
-      'Silakan hubungi tim Bettazon.id melalui support@bettazon.id. Untuk pertanyaan kebijakan dan privasi, silakan kirim ke privacy@bettazon.id.',
+      'Silakan hubungi tim Bettazon.id melalui official@bettazon.id. Untuk pertanyaan kebijakan dan privasi, silakan kirim ke official@bettazon.id.',
   },
 ]
 
@@ -64,8 +64,8 @@ export default function FaqPage() {
         <section className="rounded-2xl border border-[#008080]/20 bg-[#008080]/5 p-5">
           <h2 className="text-lg font-bold text-gray-900 mb-2">Kontak & Informasi Perusahaan</h2>
           <div className="space-y-2 text-gray-700">
-            <p>📧 Support umum: <a href="mailto:support@bettazon.id" className="text-[#008080] font-medium hover:underline">support@bettazon.id</a></p>
-            <p>🔒 Privasi & data pribadi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">privacy@bettazon.id</a></p>
+            <p>📧 Support umum: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
+            <p>🔒 Privasi & data pribadi: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
             <p>🌐 Website: <span className="font-medium">https://bettazon.id</span></p>
             <p>📍 Alamat: <a href="/company-info" className="text-[#008080] font-medium hover:underline">Lihat informasi perusahaan lengkap</a></p>
             <p>📍 Wilayah layanan: Indonesia</p>

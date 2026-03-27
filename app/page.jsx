@@ -14,7 +14,8 @@ function HeroSection() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-[#FE735C]/10 border border-[#FE735C]/20 text-[#FE735C] px-4 py-2 rounded-full text-sm font-semibold mb-8">
-            🐠 Marketplace Ikan Hias #1 di Indonesia
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+            Marketplace Ikan Hias #1 di Indonesia
           </div>
 
           {/* Headline */}
@@ -89,53 +90,104 @@ function HeroSection() {
 }
 
 // ─── FEATURES ────────────────────────────────────────────────────────────────
+const FeatureIcon = ({ id }) => {
+  const icons = {
+    buy: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <path d="M16 10a4 4 0 01-8 0" />
+      </svg>
+    ),
+    auction: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+    live: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="23 7 16 12 23 17 23 7" />
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+      </svg>
+    ),
+    shipping: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="15" height="13" />
+        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
+      </svg>
+    ),
+    wallet: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12V7H5a2 2 0 010-4h14v4" />
+        <path d="M3 5v14a2 2 0 002 2h16v-5" />
+        <path d="M18 12a2 2 0 000 4h4v-4z" />
+      </svg>
+    ),
+    rating: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+  }
+  return icons[id] || null
+}
+
 const features = [
   {
-    icon: '🛒',
+    iconId: 'buy',
     title: 'Beli Langsung',
     description:
       'Temukan ikan hias favoritmu dan beli langsung dengan harga transparan. Checkout mudah dengan berbagai metode pembayaran.',
     color: 'bg-orange-50 border-orange-100',
+    iconColor: 'text-[#FE735C]',
     iconBg: 'bg-[#FE735C]/10',
   },
   {
-    icon: '⏱️',
+    iconId: 'auction',
     title: 'Lelang Berbatas Waktu',
     description:
       'Ikuti lelang dengan countdown timer realtime. Auto-extend otomatis jika ada penawaran di menit terakhir — tidak ada yang ketinggalan!',
     color: 'bg-teal-50 border-teal-100',
+    iconColor: 'text-[#008080]',
     iconBg: 'bg-[#008080]/10',
   },
   {
-    icon: '📡',
+    iconId: 'live',
     title: 'Live Streaming + Lelang Live',
     description:
       'Saksikan ikan langsung dari kandang penjual via live streaming. Ajukan penawaran secara real-time saat stream berlangsung.',
     color: 'bg-red-50 border-red-100',
+    iconColor: 'text-red-500',
     iconBg: 'bg-red-100',
   },
   {
-    icon: '📦',
+    iconId: 'shipping',
     title: 'Pengiriman Aman ke Seluruh RI',
     description:
       'Jaringan kurir terpercaya (JNE, J&T, dll.) ke seluruh Indonesia. Layanan transshipper internasional untuk pengiriman ke luar negeri.',
     color: 'bg-blue-50 border-blue-100',
+    iconColor: 'text-blue-500',
     iconBg: 'bg-blue-100',
   },
   {
-    icon: '💳',
+    iconId: 'wallet',
     title: 'Dompet Digital & Escrow',
     description:
       'Sistem escrow melindungi setiap transaksi. Dana ditahan hingga pesanan terverifikasi diterima — penjual dan pembeli sama-sama aman.',
     color: 'bg-purple-50 border-purple-100',
+    iconColor: 'text-purple-500',
     iconBg: 'bg-purple-100',
   },
   {
-    icon: '⭐',
+    iconId: 'rating',
     title: 'Rating & Ulasan',
     description:
       'Sistem rating terpercaya membantu memilih penjual terbaik. Beri ulasan dan bantu komunitas ikan hias tumbuh bersama.',
     color: 'bg-yellow-50 border-yellow-100',
+    iconColor: 'text-yellow-500',
     iconBg: 'bg-yellow-100',
   },
 ]
@@ -146,7 +198,8 @@ function FeaturesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-[#008080]/10 text-[#008080] px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            ✨ Kenapa Bettazon.id?
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            Kenapa Bettazon.id?
           </div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Semua yang Kamu Butuhkan
@@ -166,9 +219,9 @@ function FeaturesSection() {
               className={`rounded-2xl p-7 border ${f.color} transition-all hover:-translate-y-1 hover:shadow-lg`}
             >
               <div
-                className={`w-12 h-12 ${f.iconBg} rounded-xl flex items-center justify-center text-2xl mb-5`}
+                className={`w-12 h-12 ${f.iconBg} ${f.iconColor} rounded-xl flex items-center justify-center mb-5`}
               >
-                {f.icon}
+                <FeatureIcon id={f.iconId} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
               <p className="text-gray-600 leading-relaxed">{f.description}</p>
@@ -181,31 +234,62 @@ function FeaturesSection() {
 }
 
 // ─── HOW IT WORKS ─────────────────────────────────────────────────────────────
+const StepIcon = ({ id }) => {
+  const icons = {
+    download: (
+      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+        <line x1="12" y1="10" x2="12" y2="16"/>
+        <polyline points="9 13 12 16 15 13"/>
+      </svg>
+    ),
+    search: (
+      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    ),
+    bid: (
+      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+      </svg>
+    ),
+    confirm: (
+      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    ),
+  }
+  return icons[id] || null
+}
+
 const steps = [
   {
     step: '01',
-    icon: '📱',
+    iconId: 'download',
     title: 'Unduh & Daftar',
     description:
       'Download aplikasi Bettazon.id di Play Store. Daftar dengan nomor HP atau akun Google dalam 1 menit.',
   },
   {
     step: '02',
-    icon: '🔍',
+    iconId: 'search',
     title: 'Temukan Ikan Favoritmu',
     description:
       'Jelajahi ribuan produk ikan hias. Filter berdasarkan jenis, ukuran, harga, atau cari langsung lewat search.',
   },
   {
     step: '03',
-    icon: '💰',
+    iconId: 'bid',
     title: 'Beli, Tawar, atau Tonton Live',
     description:
       'Beli langsung, ikuti lelang dengan penawaran terbaik, atau tonton live streaming penjual favoritmu.',
   },
   {
     step: '04',
-    icon: '✅',
+    iconId: 'confirm',
     title: 'Terima dengan Aman',
     description:
       'Pesananmu dikirim aman. Dana escrow dicairkan ke penjual setelah kamu konfirmasi penerimaan.',
@@ -218,7 +302,8 @@ function HowItWorksSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-[#FE735C]/10 text-[#FE735C] px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            🚀 Cara Kerja
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Cara Kerja
           </div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Belanja Ikan Hias
@@ -239,8 +324,8 @@ function HowItWorksSection() {
               )}
 
               {/* Icon box */}
-              <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#FE735C] to-[#e5634d] text-white text-2xl rounded-2xl shadow-lg shadow-[#FE735C]/30 mb-5">
-                <span className="text-2xl">{step.icon}</span>
+              <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#FE735C] to-[#e5634d] text-white rounded-2xl shadow-lg shadow-[#FE735C]/30 mb-5">
+                <StepIcon id={step.iconId} />
                 <span className="absolute -top-2 -right-2 w-6 h-6 bg-white border-2 border-[#FE735C] rounded-full text-[#FE735C] text-xs font-bold flex items-center justify-center">
                   {step.step}
                 </span>
@@ -265,7 +350,8 @@ function LiveHighlightSection() {
           {/* Text */}
           <div>
             <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-              🔴 LIVE SEKARANG
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block" />
+              LIVE SEKARANG
             </div>
             <h2 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
               Lelang Live{' '}
@@ -280,12 +366,13 @@ function LiveHighlightSection() {
 
             <div className="space-y-3">
               {[
-                '🎥 Live streaming langsung dari kandang peternak',
-                '💬 Chat real-time dengan penjual saat streaming',
-                '🔨 Penawaran lelang live via data packet terenkripsi',
-                '📊 Hasil lelang otomatis tersimpan & diproses',
+                'Live streaming langsung dari kandang peternak',
+                'Chat real-time dengan penjual saat streaming',
+                'Penawaran lelang live via data packet terenkripsi',
+                'Hasil lelang otomatis tersimpan & diproses',
               ].map((item) => (
                 <div key={item} className="flex items-start gap-3 text-gray-200 text-base">
+                  <svg className="w-5 h-5 text-[#FE735C] mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                   <span>{item}</span>
                 </div>
               ))}
@@ -370,7 +457,11 @@ function SellerSection() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
           <div className="relative">
-            <div className="text-5xl mb-6">🏪</div>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+            </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Punya Ikan Hias untuk Dijual?
             </h2>
@@ -419,7 +510,7 @@ function TrustSupportSection() {
     {
       title: 'Bantuan & Legal',
       description:
-        'Hubungi support@bettazon.id untuk bantuan transaksi dan privacy@bettazon.id untuk pertanyaan privasi. Syarat layanan tersedia publik di website ini.',
+        'Hubungi official@bettazon.id untuk bantuan transaksi dan official@bettazon.id untuk pertanyaan privasi. Syarat layanan tersedia publik di website ini.',
       ctaLabel: 'Syarat & Ketentuan',
       ctaHref: '/terms',
     },
@@ -430,7 +521,8 @@ function TrustSupportSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-[#FE735C]/10 text-[#FE735C] px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            🛡️ Pembayaran, Legal & Bantuan
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Pembayaran, Legal & Bantuan
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Informasi Penting untuk Pengguna Bettazon.id
@@ -460,8 +552,8 @@ function TrustSupportSection() {
 
         <div className="mt-8 rounded-2xl border border-[#008080]/20 bg-[#008080]/5 p-6 text-sm text-gray-700">
           <p className="font-semibold text-gray-900 mb-2">Kontak publik</p>
-          <p>Support umum: <a href="mailto:support@bettazon.id" className="text-[#008080] font-medium hover:underline">support@bettazon.id</a></p>
-          <p>Pertanyaan privasi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">privacy@bettazon.id</a></p>
+          <p>Support umum: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
+          <p>Pertanyaan privasi: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
           <p>Wilayah layanan: Indonesia</p>
         </div>
       </div>
@@ -474,7 +566,11 @@ function DownloadSection() {
   return (
     <section id="unduh" className="py-20 sm:py-28 bg-gradient-to-br from-[#FE735C]/5 via-white to-[#008080]/5">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="text-6xl mb-6">📱</div>
+        <div className="flex justify-center mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#FE735C]/10 to-[#008080]/10 rounded-3xl flex items-center justify-center border border-gray-100">
+            <svg className="w-10 h-10 text-[#FE735C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+        </div>
         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
           Siap Bergabung?
           <br />

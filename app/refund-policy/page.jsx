@@ -68,7 +68,7 @@ export default function RefundPolicyPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-2">Hubungi Kami</h2>
           <p className="text-gray-700 leading-relaxed">
             Jika Anda membutuhkan bantuan terkait refund, silakan kirim detail order dan kendala
-            Anda ke <a href="mailto:support@bettazon.id" className="text-[#008080] font-medium hover:underline">support@bettazon.id</a>.
+            Anda ke <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a>.
           </p>
         </section>
       </div>

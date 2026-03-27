@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const navLinks = [
   { href: '#fitur', label: 'Fitur' },
@@ -18,13 +19,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl transition-transform duration-300 group-hover:rotate-12 inline-block">
-              🐠
-            </span>
-            <span className="text-xl font-bold">
-              <span className="text-[#FE735C]">Bettazon</span>
-              <span className="text-[#008080]">.id</span>
-            </span>
+            <Image
+              src="/assets/images/logo.png"
+              alt="Bettazon.id"
+              width={140}
+              height={36}
+              className="h-9 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop nav links */}

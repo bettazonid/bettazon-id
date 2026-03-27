@@ -74,7 +74,7 @@ export default function TermsPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-2">Kontak</h2>
           <p className="text-gray-700 leading-relaxed">
             Jika Anda memerlukan klarifikasi terkait syarat & ketentuan ini, silakan hubungi
-            Bettazon.id melalui <a href="mailto:support@bettazon.id" className="text-[#008080] font-medium hover:underline">support@bettazon.id</a>.
+            Bettazon.id melalui <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a>.
           </p>
         </section>
       </div>
