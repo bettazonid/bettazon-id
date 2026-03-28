@@ -19,6 +19,11 @@ export const metadata = {
     locale: 'id_ID',
     type: 'website',
   },
+  icons: {
+    icon: '/assets/images/favicon.ico',
+    shortcut: '/assets/images/favicon.ico',
+    apple: '/assets/images/favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }) {
