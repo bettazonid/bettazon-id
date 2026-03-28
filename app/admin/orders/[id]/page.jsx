@@ -33,6 +33,14 @@ const CANCEL_REASON_LABEL = {
   other:             'Lainnya (CS)',
 }
 
+const CS_CANCEL_REASON_LABEL = {
+  cs_cancelled:       'Keputusan CS',
+  collector_failed:   'Kurir gagal pickup',
+  pickup_timeout:     'Timeout pickup',
+  customer_complaint: 'Komplain pembeli',
+  other:              'Lainnya',
+}
+
 function StatusBadge({ status }) {
   const meta = STATUS_META[status] || { label: status?.replace(/_/g, ' ') || '—', color: 'bg-gray-100 text-gray-700' }
   return (
@@ -195,6 +203,12 @@ export default function AdminOrderDetailPage() {
             <span>🚫</span> Detail Pembatalan
           </h2>
           <div className="space-y-1">
+            {order.cancellation.csReason && (
+              <InfoRow
+                label="Alasan CS"
+                value={CS_CANCEL_REASON_LABEL[order.cancellation.csReason] || order.cancellation.csReason}
+              />
+            )}
             <InfoRow
               label="Alasan"
               value={CANCEL_REASON_LABEL[order.cancellation.reason] || order.cancellation.reason}
