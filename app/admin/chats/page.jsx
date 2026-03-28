@@ -71,6 +71,16 @@ function StatusPill({ children, tone = 'gray' }) {
   )
 }
 
+function TypingDots() {
+  return (
+    <span className="inline-flex items-center gap-1" aria-hidden="true">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#008080] animate-bounce [animation-delay:0ms]" />
+      <span className="h-1.5 w-1.5 rounded-full bg-[#008080] animate-bounce [animation-delay:120ms]" />
+      <span className="h-1.5 w-1.5 rounded-full bg-[#008080] animate-bounce [animation-delay:240ms]" />
+    </span>
+  )
+}
+
 export default function AdminChatsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -79,6 +89,7 @@ export default function AdminChatsPage() {
   const socketRef = useRef(null)
   const joinedChatIdsRef = useRef(new Set())
   const selectedChatIdRef = useRef('')
+  const typingTimeoutRef = useRef(null)
 
   const [adminUser, setAdminUser] = useState(null)
   const [loadingChats, setLoadingChats] = useState(true)
@@ -97,6 +108,8 @@ export default function AdminChatsPage() {
   const [draftMessage, setDraftMessage] = useState('')
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
+  const [onlineUserIds, setOnlineUserIds] = useState([])
+  const [typingByChat, setTypingByChat] = useState({})
 
   useEffect(() => {
     selectedChatIdRef.current = selectedChatId
@@ -183,6 +196,24 @@ export default function AdminChatsPage() {
       setError(err.message || 'Koneksi realtime chat gagal')
     })
 
+    socket.on('users:online', (userIds = []) => {
+      setOnlineUserIds(Array.isArray(userIds) ? userIds.map((id) => String(id)) : [])
+    })
+
+    socket.on('user:online', (payload) => {
+      const userId = payload?.userId ? String(payload.userId) : ''
+      if (!userId) return
+
+      setOnlineUserIds((prev) => (prev.includes(userId) ? prev : [...prev, userId]))
+    })
+
+    socket.on('user:offline', (payload) => {
+      const userId = payload?.userId ? String(payload.userId) : ''
+      if (!userId) return
+
+      setOnlineUserIds((prev) => prev.filter((id) => id !== userId))
+    })
+
     socket.on('chat_message', (messagePayload) => {
       const incomingChatId = messagePayload?.chatId
       if (!incomingChatId) return
@@ -206,7 +237,43 @@ export default function AdminChatsPage() {
       upsertChat(chat, message)
     })
 
+    socket.on('chat:typing', ({ chatId, userId, userName, isTyping }) => {
+      const normalizedChatId = chatId ? String(chatId) : ''
+      if (!normalizedChatId || !userId) return
+
+      setTypingByChat((prev) => {
+        const current = prev[normalizedChatId] || {}
+        if (isTyping) {
+          return {
+            ...prev,
+            [normalizedChatId]: {
+              ...current,
+              [String(userId)]: {
+                name: userName || 'User',
+                at: Date.now(),
+              },
+            },
+          }
+        }
+
+        const nextChatTyping = { ...current }
+        delete nextChatTyping[String(userId)]
+
+        const next = { ...prev }
+        if (Object.keys(nextChatTyping).length === 0) {
+          delete next[normalizedChatId]
+        } else {
+          next[normalizedChatId] = nextChatTyping
+        }
+
+        return next
+      })
+    })
+
     return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
       socket.disconnect()
       socketRef.current = null
       joinedChatIdsRef.current = new Set()
@@ -269,6 +336,13 @@ export default function AdminChatsPage() {
     () => chats.find((chat) => (chat._id || chat.id) === selectedChatId) || null,
     [chats, selectedChatId]
   )
+
+  const activeTypingUsers = useMemo(() => {
+    const current = typingByChat[selectedChatId] || {}
+    return Object.entries(current)
+      .filter(([userId]) => String(userId) !== String(adminUser?._id || ''))
+      .map(([userId, value]) => ({ userId, ...value }))
+  }, [typingByChat, selectedChatId, adminUser?._id])
 
   const filteredChats = useMemo(() => {
     const keyword = conversationSearch.trim().toLowerCase()
@@ -412,6 +486,13 @@ export default function AdminChatsPage() {
       setSendingMessage(true)
       setError('')
 
+      if (socketRef.current) {
+        socketRef.current.emit('chat:typing', {
+          chatId: selectedChatId,
+          isTyping: false,
+        })
+      }
+
       const res = await adminFetch('/api/chat/message', {
         method: 'POST',
         body: JSON.stringify({
@@ -439,6 +520,38 @@ export default function AdminChatsPage() {
       setSendingMessage(false)
     }
   }
+
+  const handleDraftChange = (value) => {
+    setDraftMessage(value)
+
+    if (!selectedChatId || !socketRef.current) return
+
+    socketRef.current.emit('chat:typing', {
+      chatId: selectedChatId,
+      isTyping: value.trim().length > 0,
+    })
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      if (!socketRef.current || !selectedChatIdRef.current) return
+      socketRef.current.emit('chat:typing', {
+        chatId: selectedChatIdRef.current,
+        isTyping: false,
+      })
+    }, 1200)
+  }
+
+  useEffect(() => {
+    if (!selectedChatId || !socketRef.current) return
+
+    socketRef.current.emit('chat:typing', {
+      chatId: selectedChatId,
+      isTyping: false,
+    })
+  }, [selectedChatId])
 
   return (
     <div className="space-y-5">
@@ -510,6 +623,7 @@ export default function AdminChatsPage() {
               ) : (
                 userResults.map((user) => {
                   const supportRole = getSupportChatType(user)
+                  const isOnline = onlineUserIds.includes(String(user._id))
                   return (
                     <div key={user._id} className="rounded-lg border border-gray-100 p-3">
                       <div className="flex items-start justify-between gap-2">
@@ -520,6 +634,9 @@ export default function AdminChatsPage() {
                         <StatusPill tone={supportRole === 'seller-admin' ? 'orange' : 'teal'}>
                           {ROLE_LABEL[getUserRole(user)] || 'User'}
                         </StatusPill>
+                      </div>
+                      <div className="mt-1">
+                        {isOnline ? <StatusPill tone="green">Online</StatusPill> : <StatusPill>Offline</StatusPill>}
                       </div>
                       <div className="mt-3 flex items-center justify-between gap-2">
                         <Link href={`/admin/users/${user._id}`} className="text-xs font-medium text-[#008080] hover:text-[#006666]">
@@ -571,6 +688,8 @@ export default function AdminChatsPage() {
                   const chatId = chat._id || chat.id
                   const other = getOtherParticipant(chat, adminUser?._id)
                   const active = chatId === selectedChatId
+                  const isOnline = onlineUserIds.includes(String(other?._id || ''))
+                  const typingUsers = Object.values(typingByChat[chatId] || {}).filter(Boolean)
                   return (
                     <button
                       key={chatId}
@@ -587,7 +706,10 @@ export default function AdminChatsPage() {
                           <p className="truncate text-sm font-semibold text-gray-900">{other?.name || 'Peserta Chat'}</p>
                           <p className="truncate text-xs text-gray-500">{other?.email || other?.phone || '—'}</p>
                         </div>
-                        {chat.unreadCount > 0 ? <StatusPill tone="green">{chat.unreadCount} unread</StatusPill> : null}
+                        <div className="flex items-center gap-1">
+                          {isOnline ? <StatusPill tone="green">Online</StatusPill> : null}
+                          {chat.unreadCount > 0 ? <StatusPill tone="green">{chat.unreadCount} unread</StatusPill> : null}
+                        </div>
                       </div>
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <StatusPill tone={chat.type === 'seller-admin' ? 'orange' : 'teal'}>
@@ -595,7 +717,14 @@ export default function AdminChatsPage() {
                         </StatusPill>
                         {chat.orderId?.orderNumber ? <StatusPill>Order {chat.orderId.orderNumber}</StatusPill> : null}
                       </div>
-                      <p className="mt-2 truncate text-xs text-gray-600">{chat.lastMessage?.content || 'Belum ada pesan.'}</p>
+                      <p className="mt-2 truncate text-xs text-gray-600">
+                        {typingUsers.length > 0 ? (
+                          <span className="inline-flex items-center gap-1 text-[#008080] italic">
+                            Sedang mengetik
+                            <TypingDots />
+                          </span>
+                        ) : (chat.lastMessage?.content || 'Belum ada pesan.')}
+                      </p>
                       <p className="mt-1 text-[11px] text-gray-400">Update {formatDateTime(chat.lastMessageAt)}</p>
                     </button>
                   )
@@ -616,12 +745,14 @@ export default function AdminChatsPage() {
                 {(() => {
                   const other = getOtherParticipant(selectedChat, adminUser?._id)
                   const supportRole = getUserRole(other)
+                  const isOnline = onlineUserIds.includes(String(other?._id || ''))
                   return (
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <h2 className="text-lg font-semibold text-gray-900">{other?.name || 'Peserta Chat'}</h2>
                         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
                           <span>{other?.email || other?.phone || '—'}</span>
+                          {isOnline ? <StatusPill tone="green">Online</StatusPill> : <StatusPill>Offline</StatusPill>}
                           <StatusPill tone={supportRole === 'seller' ? 'orange' : 'teal'}>
                             {ROLE_LABEL[supportRole] || 'User'}
                           </StatusPill>
@@ -670,6 +801,12 @@ export default function AdminChatsPage() {
                     )
                   })
                 )}
+                {activeTypingUsers.length > 0 ? (
+                  <div className="inline-flex items-center gap-1 text-xs text-[#008080] italic">
+                    {activeTypingUsers.map((item) => item.name).join(', ')} sedang mengetik
+                    <TypingDots />
+                  </div>
+                ) : null}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -677,7 +814,7 @@ export default function AdminChatsPage() {
                 <div className="flex gap-3">
                   <textarea
                     value={draftMessage}
-                    onChange={(e) => setDraftMessage(e.target.value)}
+                    onChange={(e) => handleDraftChange(e.target.value)}
                     placeholder="Tulis balasan admin..."
                     rows={3}
                     className="flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30"
