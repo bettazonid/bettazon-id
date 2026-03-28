@@ -12,6 +12,7 @@ const menus = [
   { href: '/admin/emails', label: 'Inbox Email' },
   { href: '/admin/emails/sent', label: 'Sent/Outbox' },
   { href: '/admin/users', label: 'Pengguna' },
+  { href: '/admin/chats', label: 'Chat Support' },
   { href: '/admin/transactions', label: 'Transaksi' },
   { href: '/admin/cron-jobs', label: 'Cron Jobs' },
 ]

@@ -11,6 +11,13 @@ const ROLE_LABEL = {
   admin: 'Admin',
 }
 
+function getSupportRole(user) {
+  const roles = Array.isArray(user?.roles) ? user.roles.map((r) => r.role) : []
+  if (user?.currentRole === 'seller' || roles.includes('seller')) return 'seller'
+  if (user?.currentRole === 'buyer' || roles.includes('buyer')) return 'buyer'
+  return ''
+}
+
 function Pill({ children, tone = 'gray' }) {
   const toneClass = {
     gray: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -165,6 +172,7 @@ export default function AdminUserDetailPage() {
     : []
 
   const addresses = Array.isArray(user.addresses) ? user.addresses : []
+  const supportRole = getSupportRole(user)
 
   return (
     <div className="space-y-5 max-w-6xl">
@@ -268,6 +276,14 @@ export default function AdminUserDetailPage() {
 
           <div className="rounded-xl border border-gray-200 bg-white p-5">
             <h2 className="font-semibold text-gray-900 mb-3">Aksi Admin</h2>
+            {supportRole ? (
+              <Link
+                href={`/admin/chats?userId=${user._id}&role=${supportRole}`}
+                className="mb-3 inline-flex w-full items-center justify-center rounded-lg bg-[#008080] px-4 py-2 text-sm font-medium text-white hover:bg-[#006666]"
+              >
+                Buka Chat Support
+              </Link>
+            ) : null}
             {user.isActive ? (
               <button
                 disabled={actionLoading || isAdminAccount}

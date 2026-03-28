@@ -10,6 +10,13 @@ const ROLE_LABEL = {
   admin: 'Admin',
 }
 
+function getSupportRole(user) {
+  const roles = Array.isArray(user?.roles) ? user.roles.map((r) => r.role) : []
+  if (user?.currentRole === 'seller' || roles.includes('seller')) return 'seller'
+  if (user?.currentRole === 'buyer' || roles.includes('buyer')) return 'buyer'
+  return ''
+}
+
 function Pill({ children, tone = 'gray' }) {
   const toneClass = {
     gray: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -338,6 +345,7 @@ export default function AdminUsersPage() {
                     : []
                   const isAdmin = roles.includes('admin') || user.currentRole === 'admin'
                   const isBusy = actionLoadingUserId === user._id
+                  const supportRole = getSupportRole(user)
 
                   return (
                     <tr key={user._id} className="hover:bg-gray-50 transition-colors">
@@ -384,6 +392,14 @@ export default function AdminUsersPage() {
                           >
                             Detail
                           </Link>
+                          {supportRole ? (
+                            <Link
+                              href={`/admin/chats?userId=${user._id}&role=${supportRole}`}
+                              className="px-3 py-1.5 rounded-lg border border-[#008080]/20 text-[#008080] text-xs font-medium hover:bg-[#008080]/5"
+                            >
+                              Chat
+                            </Link>
+                          ) : null}
                           {user.isActive ? (
                             <button
                               disabled={isBusy || isAdmin}
