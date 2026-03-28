@@ -2,8 +2,16 @@
 
 import { useEffect, useState } from 'react';
 
+const IS_CLOSED_TESTING = true;
 const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=id.bettazon.app';
+const WHATSAPP_BETA_MESSAGE = encodeURIComponent(
+  `Halo Admin Bettazon 👋\n\nSaya ingin gabung sebagai beta tester Android Bettazon.\n\nData saya:\n- Nama: \n- Email Google Play: \n- No. WhatsApp: \n- Device Android (merk/model): \n\nMohon panduan langkah selanjutnya ya. Terima kasih 🙏`
+);
+const BETA_TESTER_WHATSAPP_URL =
+  `https://wa.me/6282186287929?text=${WHATSAPP_BETA_MESSAGE}`;
+const ANDROID_BETA_OPT_IN_URL =
+  'https://play.google.com/apps/testing/id.bettazon.app';
 const APP_STORE_URL = 'https://apps.apple.com/app/bettazon/id0000000000'; // TODO: ganti dengan ID App Store sebenarnya
 
 const typeConfig = {
@@ -37,19 +45,19 @@ export default function AppLanding({ type, id }) {
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
 
     if (isAndroid) {
-      // Android Intent URI:
-      // → kalau app SUDAH ada: Chrome langsung buka app
-      // → kalau app BELUM ada: Chrome otomatis redirect ke Play Store (via browser_fallback_url)
-      // Tidak perlu setTimeout, semua ditangani Android OS/Chrome
-      const fallbackUrl = encodeURIComponent(PLAY_STORE_URL);
-      // Gunakan bettazon.id sebagai host agar Flutter GoRouter menerima path /type/id yang benar.
-      // Hindari bettazon://type/id karena 'type' terbaca sebagai HOST (bukan path) oleh URI parser.
-      window.location.href =
-        `intent://bettazon.id/${type}/${id}` +
-        `#Intent;scheme=bettazon;package=id.bettazon.app;` +
-        `S.browser_fallback_url=${fallbackUrl};end`;
+      if (IS_CLOSED_TESTING) {
+        // Android closed testing flow:
+        // coba buka app dulu via custom scheme, lalu fallback ke panduan beta tester.
+        window.location.href = `bettazon://bettazon.id/${type}/${id}`;
+      } else {
+        // Android production flow (buka app langsung via intent, fallback Play Store)
+        const fallbackUrl = encodeURIComponent(PLAY_STORE_URL);
+        window.location.href =
+          `intent://bettazon.id/${type}/${id}` +
+          `#Intent;scheme=bettazon;package=id.bettazon.app;` +
+          `S.browser_fallback_url=${fallbackUrl};end`;
+      }
 
-      // Safety net: kalau browser lama tidak support intent://, tampilkan tombol manual setelah 3s
       const timer = setTimeout(() => setStatus('fallback'), 3000);
       return () => clearTimeout(timer);
     } else if (isIOS) {
@@ -126,17 +134,48 @@ export default function AppLanding({ type, id }) {
             )}
 
             {/* Play Store */}
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl mb-3 transition-colors"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
-              </svg>
-              Download di Play Store
-            </a>
+            {IS_CLOSED_TESTING ? (
+              <>
+                <div className="w-full rounded-xl border border-amber-200 bg-amber-50 text-amber-800 px-4 py-3 text-sm font-semibold mb-3">
+                  🚧 Segera Hadir di Play Store (Closed Beta)
+                </div>
+
+                <div className="w-full rounded-xl border border-gray-200 p-3 text-left mb-3">
+                  <p className="text-xs text-gray-500 mb-2">Android Closed Testing (2 langkah)</p>
+                  <a
+                    href={BETA_TESTER_WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-[#008080] hover:bg-[#006666] text-white font-semibold py-2.5 rounded-lg mb-2 transition-colors"
+                  >
+                    1) Chat Admin (WA)
+                  </a>
+                  <a
+                    href={ANDROID_BETA_OPT_IN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-2.5 rounded-lg transition-colors"
+                  >
+                    2) Download Setelah Di-approve
+                  </a>
+                  <p className="text-[11px] text-gray-400 mt-2">
+                    Pastikan akun Google kamu sudah di-approve sebagai tester sebelum download.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <a
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl mb-3 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
+                </svg>
+                Download di Play Store
+              </a>
+            )}
 
             {/* App Store */}
             <a

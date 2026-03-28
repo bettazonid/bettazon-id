@@ -2,6 +2,14 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 
+const IS_CLOSED_TESTING = true
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=id.bettazon.app'
+const WHATSAPP_BETA_MESSAGE = encodeURIComponent(
+  `Halo Admin Bettazon 👋\n\nSaya ingin gabung sebagai beta tester Android Bettazon.\n\nData saya:\n- Nama: \n- Email Google Play: \n- No. WhatsApp: \n- Device Android (merk/model): \n\nMohon panduan langkah selanjutnya ya. Terima kasih 🙏`
+)
+const BETA_TESTER_WHATSAPP_URL = `https://wa.me/6282186287929?text=${WHATSAPP_BETA_MESSAGE}`
+const ANDROID_BETA_OPT_IN_URL = 'https://play.google.com/apps/testing/id.bettazon.app'
+
 // ─── HERO ────────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
@@ -43,7 +51,7 @@ function HeroSection() {
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
               </svg>
-              Download di Play Store
+              {IS_CLOSED_TESTING ? '🚧 Segera Hadir di Play Store' : 'Download di Play Store'}
             </a>
             <a
               href="#fitur"
@@ -269,9 +277,11 @@ const steps = [
   {
     step: '01',
     iconId: 'download',
-    title: 'Unduh & Daftar',
+    title: IS_CLOSED_TESTING ? 'Join Beta Tester' : 'Unduh & Daftar',
     description:
-      'Download aplikasi Bettazon.id di Play Store. Daftar dengan nomor HP atau akun Google dalam 1 menit.',
+      IS_CLOSED_TESTING
+        ? 'Saat ini aplikasi masih closed testing. Chat admin dulu untuk permohonan gabung tester, lalu lanjut download dari halaman testing Google Play.'
+        : 'Download aplikasi Bettazon.id di Play Store. Daftar dengan nomor HP atau akun Google dalam 1 menit.',
   },
   {
     step: '02',
@@ -572,31 +582,65 @@ function DownloadSection() {
           </div>
         </div>
         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-          Siap Bergabung?
+          {IS_CLOSED_TESTING ? 'Siap Bergabung di Beta?' : 'Siap Bergabung?'}
           <br />
-          <span className="text-[#FE735C]">Download Sekarang</span>
+          <span className="text-[#FE735C]">
+            {IS_CLOSED_TESTING ? 'Join Tester Dulu' : 'Download Sekarang'}
+          </span>
         </h2>
         <p className="text-xl text-gray-600 mb-10 max-w-xl mx-auto leading-relaxed">
-          Tersedia di Android. Gratis untuk diunduh dan didaftarkan. Mulai jual atau beli ikan
-          hias hari ini!
+          {IS_CLOSED_TESTING
+            ? '🚧 Aplikasi Android Bettazon saat ini masih dalam closed testing. Ikuti 2 langkah berikut untuk akses beta.'
+            : 'Tersedia di Android. Gratis untuk diunduh dan didaftarkan. Mulai jual atau beli ikan hias hari ini!'}
         </p>
 
-        <div className="flex justify-center">
-          <a
-            href="#"
-            className="inline-flex items-center gap-4 bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all hover:shadow-xl hover:-translate-y-0.5"
-          >
-            <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
-            </svg>
-            <div className="text-left">
-              <div className="text-xs text-gray-400">Dapatkan di</div>
-              <div className="font-bold text-lg">Google Play</div>
+        {IS_CLOSED_TESTING ? (
+          <div className="max-w-xl mx-auto rounded-2xl border border-gray-200 bg-white p-6 text-left">
+            <p className="text-sm text-gray-500 mb-3">Android Closed Testing (2 langkah)</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href={BETA_TESTER_WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[#008080] hover:bg-[#006666] text-white font-semibold px-4 py-3 rounded-xl transition-colors"
+              >
+                1) Chat Admin (WA)
+              </a>
+              <a
+                href={ANDROID_BETA_OPT_IN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-semibold px-4 py-3 rounded-xl transition-colors"
+              >
+                2) Download Setelah Di-approve
+              </a>
             </div>
-          </a>
-        </div>
+            <p className="text-xs text-gray-400 mt-3">
+              Gunakan akun Google yang sama saat approval tester dan saat membuka link download.
+            </p>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-4 bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all hover:shadow-xl hover:-translate-y-0.5"
+            >
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
+              </svg>
+              <div className="text-left">
+                <div className="text-xs text-gray-400">Dapatkan di</div>
+                <div className="font-bold text-lg">Google Play</div>
+              </div>
+            </a>
+          </div>
+        )}
 
-        <p className="text-sm text-gray-400 mt-6">Gratis · Android 7.0+ · Update rutin</p>
+        <p className="text-sm text-gray-400 mt-6">
+          {IS_CLOSED_TESTING ? 'Closed Testing' : 'Gratis'} · Android 7.0+ · Update rutin
+        </p>
       </div>
     </section>
   )
