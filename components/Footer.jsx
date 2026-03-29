@@ -27,7 +27,9 @@ export default function Footer() {
             {/* Social Links */}
             <div className="flex gap-3 mt-6">
               <a
-                href="#"
+                href="https://www.instagram.com/bettazon.id"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="w-9 h-9 bg-gray-800 hover:bg-pink-600 rounded-full flex items-center justify-center transition-all"
               >
@@ -36,7 +38,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://tiktok.com/@bettazon_indonesia"
                 aria-label="TikTok"
                 className="w-9 h-9 bg-gray-800 hover:bg-black rounded-full flex items-center justify-center transition-all"
               >
@@ -45,7 +47,9 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://wa.me/6282186287929?text=Halo%20Bettazon%2C%20saya%20ingin%20bertanya%20tentang..."
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="WhatsApp"
                 className="w-9 h-9 bg-gray-800 hover:bg-green-600 rounded-full flex items-center justify-center transition-all"
               >
@@ -120,7 +124,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:official@bettazon.id"
+                  href="mailto:support@bettazon.id"
                   className="hover:text-[#FE735C] transition-colors"
                 >
                   Hubungi Kami
@@ -128,7 +132,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:official@bettazon.id"
+                  href="mailto:privacy@bettazon.id"
                   className="hover:text-[#FE735C] transition-colors"
                 >
                   Pertanyaan Privasi
