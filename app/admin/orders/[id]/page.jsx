@@ -6,16 +6,18 @@ import { adminFetch } from '@/lib/adminApi'
 import Link from 'next/link'
 
 const STATUS_META = {
-  pending:         { label: 'Menunggu Pembayaran', color: 'bg-yellow-100 text-yellow-800' },
-  payment_pending: { label: 'Konfirmasi Pembayaran', color: 'bg-amber-100 text-amber-800' },
-  paid:            { label: 'Dibayar', color: 'bg-blue-100 text-blue-800' },
-  processing:      { label: 'Diproses', color: 'bg-cyan-100 text-cyan-800' },
-  shipped:         { label: 'Dikirim', color: 'bg-purple-100 text-purple-800' },
-  delivered:       { label: 'Diterima', color: 'bg-indigo-100 text-indigo-800' },
-  completed:       { label: 'Selesai', color: 'bg-emerald-100 text-emerald-800' },
-  cancelled:       { label: 'Dibatalkan', color: 'bg-red-100 text-red-800' },
-  disputed:        { label: 'Dispute', color: 'bg-orange-100 text-orange-800' },
-  refunded:        { label: 'Refund', color: 'bg-gray-200 text-gray-700' },
+  pending:            { label: 'Menunggu Pembayaran', color: 'bg-yellow-100 text-yellow-800' },
+  payment_pending:    { label: 'Konfirmasi Pembayaran', color: 'bg-amber-100 text-amber-800' },
+  paid:               { label: 'Dibayar', color: 'bg-blue-100 text-blue-800' },
+  processing:         { label: 'Diproses', color: 'bg-cyan-100 text-cyan-800' },
+  shipped:            { label: 'Dikirim', color: 'bg-purple-100 text-purple-800' },
+  delivered:          { label: 'Diterima', color: 'bg-indigo-100 text-indigo-800' },
+  completed:          { label: 'Selesai', color: 'bg-emerald-100 text-emerald-800' },
+  cancelled:          { label: 'Dibatalkan', color: 'bg-red-100 text-red-800' },
+  disputed:           { label: 'Dispute', color: 'bg-orange-100 text-orange-800' },
+  refunded:           { label: 'Refund', color: 'bg-gray-200 text-gray-700' },
+  replacing:          { label: 'Menunggu Pengganti Dikirim', color: 'bg-teal-100 text-teal-800' },
+  replacing_shipped:  { label: 'Pengganti Dikirim', color: 'bg-teal-200 text-teal-900' },
 }
 
 const ORDER_TYPE_LABEL = {
@@ -479,9 +481,94 @@ export default function AdminOrderDetailPage() {
                 </p>
               )}
 
-              {order.status === 'disputed' && (
+              {/* ── Dispute section: show whenever a dispute exists ── */}
+              {order.dispute?.initiatedBy && (
                 <div className="space-y-3">
-                  {/* Dispute details */}
+                  {/* Replacement DOA banner */}
+                  {order.dispute?.isReplacementDispute && (
+                    <div className="rounded-lg bg-blue-50 border border-blue-300 p-3">
+                      <p className="text-xs font-bold text-blue-800 mb-1">🔄 REPLACEMENT DOA — Langsung ke Admin</p>
+                      <p className="text-xs text-blue-700">
+                        Buyer melaporkan produk <strong>pengganti</strong> juga mati saat tiba.
+                        Seller tidak perlu merespons. Hanya Admin yang bisa menyelesaikan.
+                        Pilihan resolusi: <strong>Refund Penuh</strong> atau <strong>Tidak Ada Refund</strong>.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Replacement shipping info */}
+                  {order.dispute?.sellerResponse?.replacementShipping?.trackingNumber && (
+                    <div className="rounded-lg bg-teal-50 border border-teal-200 p-3">
+                      <p className="text-xs font-semibold text-teal-700 mb-1">📦 Info Pengiriman Produk Pengganti</p>
+                      <div className="text-xs text-teal-800 space-y-0.5">
+                        <p>Kurir: <strong>{order.dispute.sellerResponse.replacementShipping.courier || '—'}</strong></p>
+                        <p>No. Resi: <strong>{order.dispute.sellerResponse.replacementShipping.trackingNumber}</strong></p>
+                        {order.dispute.sellerResponse.replacementShipping.shippedAt && (
+                          <p>Dikirim: {new Date(order.dispute.sellerResponse.replacementShipping.shippedAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Original (first) dispute history */}
+                  {order.dispute?.originalDispute && (
+                    <details className="rounded-lg bg-gray-50 border border-gray-200">
+                      <summary className="px-4 py-3 text-xs font-semibold text-gray-600 cursor-pointer select-none">
+                        📋 Riwayat Klaim Pertama (DOA Produk Asli)
+                      </summary>
+                      <div className="px-4 pb-4 space-y-2 text-xs">
+                        <div className="flex gap-2 pt-2">
+                          <span className="text-gray-500 w-20 shrink-0">Alasan:</span>
+                          <span className="text-gray-800">{order.dispute.originalDispute.reason || '—'}</span>
+                        </div>
+                        {order.dispute.originalDispute.description && (
+                          <div className="flex gap-2">
+                            <span className="text-gray-500 w-20 shrink-0">Keterangan:</span>
+                            <span className="text-gray-800">{order.dispute.originalDispute.description}</span>
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <span className="text-gray-500 w-20 shrink-0">Resolusi:</span>
+                          <span className="text-gray-800">{order.dispute.originalDispute.resolution || '—'}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="text-gray-500 w-20 shrink-0">Refund:</span>
+                          <span className="font-semibold text-gray-900">
+                            {order.dispute.originalDispute.refundType === 'replace' ? '🔄 Ganti Produk'
+                              : order.dispute.originalDispute.refundType === 'full' ? '💰 Penuh'
+                              : order.dispute.originalDispute.refundType === 'partial'
+                              ? `💰 Sebagian — Rp ${(order.dispute.originalDispute.refundAmount || 0).toLocaleString('id-ID')}`
+                              : 'Tidak ada'}
+                          </span>
+                        </div>
+                        {order.dispute.originalDispute.doaEvidence?.length > 0 && (
+                          <div>
+                            <p className="text-gray-500 mb-1.5">Bukti DOA Pertama ({order.dispute.originalDispute.doaEvidence.length}):</p>
+                            <div className="flex flex-wrap gap-2">
+                              {order.dispute.originalDispute.doaEvidence.map((ev, i) => (
+                                <a key={i} href={ev.url} target="_blank" rel="noopener noreferrer"
+                                  className="relative block w-14 h-14 rounded overflow-hidden border border-gray-300 hover:border-gray-500 group">
+                                  {ev.fileType === 'video' ? (
+                                    <div className="w-full h-full bg-black flex items-center justify-center">
+                                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                  ) : (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={ev.url} alt="" className="w-full h-full object-cover" />
+                                  )}
+                                  <span className={`absolute bottom-0 left-0 right-0 text-center text-[8px] font-bold py-0.5 ${ev.fileType === 'video' ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'}`}>
+                                    {ev.fileType === 'video' ? 'VID' : 'IMG'}
+                                  </span>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </details>
+                  )}
+
+                  {/* Current dispute details */}
                   <div className="rounded-lg bg-orange-50 border border-orange-200 p-4">
                     <p className="text-sm font-bold text-orange-800 mb-2">⚠️ Klaim {order.dispute?.type?.toUpperCase() || 'DISPUTE'}</p>
                     <div className="space-y-1 text-xs">
@@ -535,44 +622,46 @@ export default function AdminOrderDetailPage() {
                     )}
                   </div>
 
-                  {/* Seller response */}
-                  {order.dispute?.sellerResponse?.respondedAt ? (
-                    <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
-                      <p className="text-xs font-semibold text-gray-700 mb-1">Respons Penjual</p>
-                      <div className="space-y-1 text-xs">
-                        <div className="flex gap-2">
-                          <span className="text-gray-500 w-24 shrink-0">Keputusan:</span>
-                          <span className={`font-semibold ${order.dispute.sellerResponse.action === 'accept' ? 'text-green-700' : 'text-red-700'}`}>
-                            {order.dispute.sellerResponse.action === 'accept' ? '✅ Setuju' : '❌ Tolak'}
-                          </span>
-                        </div>
-                        {order.dispute.sellerResponse.proposedRefundType && (
+                  {/* Seller response — only for non-replacement disputes */}
+                  {!order.dispute?.isReplacementDispute && (
+                    order.dispute?.sellerResponse?.respondedAt ? (
+                      <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
+                        <p className="text-xs font-semibold text-gray-700 mb-1">Respons Penjual</p>
+                        <div className="space-y-1 text-xs">
                           <div className="flex gap-2">
-                            <span className="text-gray-500 w-24 shrink-0">Usulan Refund:</span>
-                            <span className="text-gray-800">
-                              {order.dispute.sellerResponse.proposedRefundType === 'full' ? 'Penuh'
-                                : order.dispute.sellerResponse.proposedRefundType === 'partial'
-                                ? `Sebagian — Rp ${(order.dispute.sellerResponse.proposedRefundAmount || 0).toLocaleString('id-ID')}`
-                                : 'Tidak ada'}
+                            <span className="text-gray-500 w-24 shrink-0">Keputusan:</span>
+                            <span className={`font-semibold ${order.dispute.sellerResponse.action === 'accept' ? 'text-green-700' : 'text-red-700'}`}>
+                              {order.dispute.sellerResponse.action === 'accept' ? '✅ Setuju' : '❌ Tolak'}
                             </span>
                           </div>
-                        )}
-                        {order.dispute.sellerResponse.message && (
-                          <div className="flex gap-2">
-                            <span className="text-gray-500 w-24 shrink-0">Pesan:</span>
-                            <span className="text-gray-800">{order.dispute.sellerResponse.message}</span>
-                          </div>
-                        )}
+                          {order.dispute.sellerResponse.proposedRefundType && (
+                            <div className="flex gap-2">
+                              <span className="text-gray-500 w-24 shrink-0">Usulan Refund:</span>
+                              <span className="text-gray-800">
+                                {order.dispute.sellerResponse.proposedRefundType === 'full' ? 'Penuh'
+                                  : order.dispute.sellerResponse.proposedRefundType === 'partial'
+                                  ? `Sebagian — Rp ${(order.dispute.sellerResponse.proposedRefundAmount || 0).toLocaleString('id-ID')}`
+                                  : 'Tidak ada'}
+                              </span>
+                            </div>
+                          )}
+                          {order.dispute.sellerResponse.message && (
+                            <div className="flex gap-2">
+                              <span className="text-gray-500 w-24 shrink-0">Pesan:</span>
+                              <span className="text-gray-800">{order.dispute.sellerResponse.message}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3">
-                      <p className="text-xs text-yellow-700">⏳ Penjual belum merespons. Jika sudah lewat 24 jam, sengketa otomatis dieskalasi.</p>
-                    </div>
+                    ) : (
+                      <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3">
+                        <p className="text-xs text-yellow-700">⏳ Penjual belum merespons. Jika sudah lewat 24 jam, sengketa otomatis dieskalasi.</p>
+                      </div>
+                    )
                   )}
 
-                  {/* Resolve form */}
-                  {order.dispute?.status !== 'resolved' && (
+                  {/* Resolve form — only when status is 'disputed' (not yet resolved) */}
+                  {order.status === 'disputed' && order.dispute?.status !== 'resolved' && (
                     showDisputeForm ? (
                       <div className="rounded-lg bg-white border border-gray-300 p-4 space-y-3">
                         <p className="text-sm font-semibold text-gray-800">Selesaikan Sengketa</p>
@@ -591,9 +680,16 @@ export default function AdminOrderDetailPage() {
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008080] bg-white"
                           >
                             <option value="full">Refund Penuh</option>
-                            <option value="partial">Refund Sebagian</option>
-                            <option value="none">Tidak Ada Refund</option>
+                            {!order.dispute?.isReplacementDispute && (
+                              <option value="partial">Refund Sebagian</option>
+                            )}
+                            <option value="none">Tidak Ada Refund (Escrow ke Seller)</option>
                           </select>
+                          {order.dispute?.isReplacementDispute && (
+                            <p className="text-xs text-blue-600 mt-1">
+                              ℹ️ Replacement DOA: hanya Refund Penuh atau Tidak Ada Refund yang tersedia.
+                            </p>
+                          )}
                         </div>
                         {disputeRefundType === 'partial' && (
                           <div>
@@ -636,6 +732,7 @@ export default function AdminOrderDetailPage() {
                     )
                   )}
 
+                  {/* Resolved state */}
                   {order.dispute?.status === 'resolved' && (
                     <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3">
                       <p className="text-xs font-semibold text-emerald-700 mb-1">✅ Sengketa Diselesaikan</p>

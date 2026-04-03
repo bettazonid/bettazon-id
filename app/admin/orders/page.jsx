@@ -5,16 +5,18 @@ import { adminFetch } from '@/lib/adminApi'
 import Link from 'next/link'
 
 const STATUS_META = {
-  pending:         { label: 'Menunggu Pembayaran', color: 'bg-yellow-100 text-yellow-800' },
-  payment_pending: { label: 'Konfirmasi Pembayaran', color: 'bg-amber-100 text-amber-800' },
-  paid:            { label: 'Dibayar', color: 'bg-blue-100 text-blue-800' },
-  processing:      { label: 'Diproses', color: 'bg-cyan-100 text-cyan-800' },
-  shipped:         { label: 'Dikirim', color: 'bg-purple-100 text-purple-800' },
-  delivered:       { label: 'Diterima', color: 'bg-indigo-100 text-indigo-800' },
-  completed:       { label: 'Selesai', color: 'bg-emerald-100 text-emerald-800' },
-  cancelled:       { label: 'Dibatalkan', color: 'bg-red-100 text-red-800' },
-  disputed:        { label: 'Dispute', color: 'bg-orange-100 text-orange-800' },
-  refunded:        { label: 'Refund', color: 'bg-gray-200 text-gray-700' },
+  pending:            { label: 'Menunggu Pembayaran', color: 'bg-yellow-100 text-yellow-800' },
+  payment_pending:    { label: 'Konfirmasi Pembayaran', color: 'bg-amber-100 text-amber-800' },
+  paid:               { label: 'Dibayar', color: 'bg-blue-100 text-blue-800' },
+  processing:         { label: 'Diproses', color: 'bg-cyan-100 text-cyan-800' },
+  shipped:            { label: 'Dikirim', color: 'bg-purple-100 text-purple-800' },
+  delivered:          { label: 'Diterima', color: 'bg-indigo-100 text-indigo-800' },
+  completed:          { label: 'Selesai', color: 'bg-emerald-100 text-emerald-800' },
+  cancelled:          { label: 'Dibatalkan', color: 'bg-red-100 text-red-800' },
+  disputed:           { label: 'Dispute', color: 'bg-orange-100 text-orange-800' },
+  refunded:           { label: 'Refund', color: 'bg-gray-200 text-gray-700' },
+  replacing:          { label: 'Menunggu Pengganti Dikirim', color: 'bg-teal-100 text-teal-800' },
+  replacing_shipped:  { label: 'Pengganti Dikirim', color: 'bg-teal-200 text-teal-900' },
 }
 
 const ORDER_TYPE_META = {

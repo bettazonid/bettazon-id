@@ -52,10 +52,10 @@ export default function AdminFeePolicyPage() {
     if (!nextPolicy) return
     setForm({
       defaultSellerFeePercent: toNumber(nextPolicy.defaultSellerFeePercent, 10),
-      firstCohortSellerCount: toNumber(nextPolicy.firstCohort?.sellerCount, 10),
+      firstCohortSellerCount: toNumber(nextPolicy.firstCohort?.limit, 10),   // DB field = limit
       firstCohortFeePercent: toNumber(nextPolicy.firstCohort?.feePercent, 0),
       firstCohortDurationDays: toNumber(nextPolicy.firstCohort?.durationDays, 90),
-      secondCohortSellerCount: toNumber(nextPolicy.secondCohort?.sellerCount, 20),
+      secondCohortSellerCount: toNumber(nextPolicy.secondCohort?.limit, 20), // DB field = limit
       secondCohortFeePercent: toNumber(nextPolicy.secondCohort?.feePercent, 5),
       secondCohortDurationDays: toNumber(nextPolicy.secondCohort?.durationDays, 90),
     })
@@ -142,12 +142,12 @@ export default function AdminFeePolicyPage() {
       const payload = {
         defaultSellerFeePercent: toNumber(form.defaultSellerFeePercent, 10),
         firstCohort: {
-          sellerCount: toNumber(form.firstCohortSellerCount, 10),
+          limit: toNumber(form.firstCohortSellerCount, 10),  // schema field = limit
           feePercent: toNumber(form.firstCohortFeePercent, 0),
           durationDays: toNumber(form.firstCohortDurationDays, 90),
         },
         secondCohort: {
-          sellerCount: toNumber(form.secondCohortSellerCount, 20),
+          limit: toNumber(form.secondCohortSellerCount, 20), // schema field = limit
           feePercent: toNumber(form.secondCohortFeePercent, 5),
           durationDays: toNumber(form.secondCohortDurationDays, 90),
         },
