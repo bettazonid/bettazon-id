@@ -70,6 +70,11 @@ export default function AdminOrderDetailPage() {
   const [cancelReason, setCancelReason] = useState('')
   const [cancelNotes, setCancelNotes] = useState('')
   const [showCancelForm, setShowCancelForm] = useState(false)
+  // Dispute resolution form
+  const [showDisputeForm, setShowDisputeForm] = useState(false)
+  const [disputeResolution, setDisputeResolution] = useState('')
+  const [disputeRefundType, setDisputeRefundType] = useState('full')
+  const [disputeRefundAmount, setDisputeRefundAmount] = useState('')
 
   const fetchOrder = useCallback(async () => {
     if (!params?.id) return
@@ -117,6 +122,36 @@ export default function AdminOrderDetailPage() {
       fetchOrder()
     } catch (err) {
       setActionMsg({ type: 'error', text: err.message || 'Gagal membatalkan pesanan' })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleResolveDispute = async () => {
+    if (!disputeResolution.trim()) {
+      setActionMsg({ type: 'error', text: 'Resolusi wajib diisi' })
+      return
+    }
+    if (disputeRefundType === 'partial' && (!disputeRefundAmount || isNaN(Number(disputeRefundAmount)) || Number(disputeRefundAmount) <= 0)) {
+      setActionMsg({ type: 'error', text: 'Jumlah refund parsial wajib diisi' })
+      return
+    }
+    try {
+      setActionLoading(true)
+      setActionMsg(null)
+      await adminFetch(`/api/orders/${params.id}/dispute/resolve`, {
+        method: 'POST',
+        body: JSON.stringify({
+          resolution: disputeResolution.trim(),
+          refundType: disputeRefundType,
+          ...(disputeRefundType === 'partial' ? { refundAmount: Number(disputeRefundAmount) } : {}),
+        }),
+      })
+      setActionMsg({ type: 'success', text: 'Sengketa berhasil diselesaikan' })
+      setShowDisputeForm(false)
+      fetchOrder()
+    } catch (err) {
+      setActionMsg({ type: 'error', text: err.message || 'Gagal menyelesaikan sengketa' })
     } finally {
       setActionLoading(false)
     }
@@ -445,11 +480,176 @@ export default function AdminOrderDetailPage() {
               )}
 
               {order.status === 'disputed' && (
-                <div className="rounded-lg bg-orange-50 border border-orange-200 p-3">
-                  <p className="text-xs font-semibold text-orange-800 mb-1">⚠️ Pesanan Dispute</p>
-                  <p className="text-xs text-orange-700">
-                    Pesanan ini dalam status dispute. Tinjau detail dan ambil tindakan yang diperlukan.
-                  </p>
+                <div className="space-y-3">
+                  {/* Dispute details */}
+                  <div className="rounded-lg bg-orange-50 border border-orange-200 p-4">
+                    <p className="text-sm font-bold text-orange-800 mb-2">⚠️ Klaim {order.dispute?.type?.toUpperCase() || 'DISPUTE'}</p>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex gap-2">
+                        <span className="text-orange-600 font-medium w-20 shrink-0">Alasan:</span>
+                        <span className="text-orange-900">{order.dispute?.reason || '—'}</span>
+                      </div>
+                      {order.dispute?.description && (
+                        <div className="flex gap-2">
+                          <span className="text-orange-600 font-medium w-20 shrink-0">Keterangan:</span>
+                          <span className="text-orange-900">{order.dispute.description}</span>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <span className="text-orange-600 font-medium w-20 shrink-0">Status:</span>
+                        <span className="font-semibold text-orange-800">{order.dispute?.status}</span>
+                      </div>
+                    </div>
+                    {/* DOA Evidence */}
+                    {order.dispute?.doaEvidence?.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-orange-700 mb-2">Bukti ({order.dispute.doaEvidence.length}):</p>
+                        <div className="flex flex-wrap gap-2">
+                          {order.dispute.doaEvidence.map((ev, i) => (
+                            <a
+                              key={i}
+                              href={ev.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="relative block w-16 h-16 rounded-lg overflow-hidden border border-orange-300 hover:border-orange-500 transition-colors group"
+                            >
+                              {ev.fileType === 'video' ? (
+                                <div className="w-full h-full bg-black flex items-center justify-center">
+                                  <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                </div>
+                              ) : (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={ev.url} alt={`bukti-${i}`} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                              )}
+                              <span className={`absolute bottom-0 left-0 right-0 text-center text-[9px] font-bold py-0.5 ${
+                                ev.fileType === 'video' ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'
+                              }`}>
+                                {ev.fileType === 'video' ? 'VIDEO' : 'FOTO'}
+                              </span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Seller response */}
+                  {order.dispute?.sellerResponse?.respondedAt ? (
+                    <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
+                      <p className="text-xs font-semibold text-gray-700 mb-1">Respons Penjual</p>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex gap-2">
+                          <span className="text-gray-500 w-24 shrink-0">Keputusan:</span>
+                          <span className={`font-semibold ${order.dispute.sellerResponse.action === 'accept' ? 'text-green-700' : 'text-red-700'}`}>
+                            {order.dispute.sellerResponse.action === 'accept' ? '✅ Setuju' : '❌ Tolak'}
+                          </span>
+                        </div>
+                        {order.dispute.sellerResponse.proposedRefundType && (
+                          <div className="flex gap-2">
+                            <span className="text-gray-500 w-24 shrink-0">Usulan Refund:</span>
+                            <span className="text-gray-800">
+                              {order.dispute.sellerResponse.proposedRefundType === 'full' ? 'Penuh'
+                                : order.dispute.sellerResponse.proposedRefundType === 'partial'
+                                ? `Sebagian — Rp ${(order.dispute.sellerResponse.proposedRefundAmount || 0).toLocaleString('id-ID')}`
+                                : 'Tidak ada'}
+                            </span>
+                          </div>
+                        )}
+                        {order.dispute.sellerResponse.message && (
+                          <div className="flex gap-2">
+                            <span className="text-gray-500 w-24 shrink-0">Pesan:</span>
+                            <span className="text-gray-800">{order.dispute.sellerResponse.message}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3">
+                      <p className="text-xs text-yellow-700">⏳ Penjual belum merespons. Jika sudah lewat 24 jam, sengketa otomatis dieskalasi.</p>
+                    </div>
+                  )}
+
+                  {/* Resolve form */}
+                  {order.dispute?.status !== 'resolved' && (
+                    showDisputeForm ? (
+                      <div className="rounded-lg bg-white border border-gray-300 p-4 space-y-3">
+                        <p className="text-sm font-semibold text-gray-800">Selesaikan Sengketa</p>
+                        <textarea
+                          value={disputeResolution}
+                          onChange={(e) => setDisputeResolution(e.target.value)}
+                          rows={3}
+                          placeholder="Tulis keputusan admin dan alasannya..."
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008080] resize-none"
+                        />
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Jenis Refund</label>
+                          <select
+                            value={disputeRefundType}
+                            onChange={(e) => setDisputeRefundType(e.target.value)}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008080] bg-white"
+                          >
+                            <option value="full">Refund Penuh</option>
+                            <option value="partial">Refund Sebagian</option>
+                            <option value="none">Tidak Ada Refund</option>
+                          </select>
+                        </div>
+                        {disputeRefundType === 'partial' && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Jumlah Refund (Rp)</label>
+                            <input
+                              type="number"
+                              value={disputeRefundAmount}
+                              onChange={(e) => setDisputeRefundAmount(e.target.value)}
+                              placeholder="Contoh: 150000"
+                              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008080]"
+                            />
+                            <p className="text-xs text-gray-400 mt-1">
+                              Total pesanan: Rp {(order.payment?.totalAmount || 0).toLocaleString('id-ID')}
+                            </p>
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleResolveDispute}
+                            disabled={actionLoading || !disputeResolution.trim()}
+                            className="flex-1 px-3 py-2 rounded-lg bg-[#008080] text-white text-sm font-semibold hover:bg-[#006666] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            {actionLoading ? 'Menyimpan...' : '✓ Konfirmasi Keputusan'}
+                          </button>
+                          <button
+                            onClick={() => { setShowDisputeForm(false); setDisputeResolution(''); setDisputeRefundType('full'); setDisputeRefundAmount('') }}
+                            className="px-3 py-2 rounded-lg border border-gray-300 text-gray-600 text-sm hover:bg-gray-50 transition-colors"
+                          >
+                            Batal
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setShowDisputeForm(true)}
+                        className="w-full px-4 py-2.5 rounded-lg bg-[#008080] text-white text-sm font-semibold hover:bg-[#006666] transition-colors"
+                      >
+                        🏛️ Selesaikan Sengketa
+                      </button>
+                    )
+                  )}
+
+                  {order.dispute?.status === 'resolved' && (
+                    <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3">
+                      <p className="text-xs font-semibold text-emerald-700 mb-1">✅ Sengketa Diselesaikan</p>
+                      <p className="text-xs text-emerald-600">{order.dispute.resolution}</p>
+                      {order.dispute.refundType && (
+                        <p className="text-xs text-emerald-600 mt-0.5">
+                          Refund: {order.dispute.refundType === 'full' ? 'Penuh'
+                            : order.dispute.refundType === 'partial'
+                            ? `Sebagian — Rp ${(order.dispute.refundAmount || 0).toLocaleString('id-ID')}`
+                            : 'Tidak ada'}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
