@@ -6,6 +6,7 @@ import { clearAdminAuth } from '@/lib/adminApi'
 
 const menus = [
   { href: '/admin/dashboard', label: 'Dashboard' },
+  { href: '/admin/reports', label: 'Laporan & Pendapatan' },
   { href: '/admin/fee-policy', label: 'Fee Policy' },
   { href: '/admin/order-config', label: 'Konfigurasi Order' },
   { href: '/admin/subscription-pricing', label: 'Harga Langganan' },
