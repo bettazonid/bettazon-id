@@ -1,12 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { adminFetch } from '@/lib/adminApi'
 
 const STATUS_LABEL = {
   pending_review: { label: 'Menunggu Review', color: '#2196F3', bg: '#E3F2FD' },
   active:         { label: 'Aktif',           color: '#4CAF50', bg: '#E8F5E9' },
   paused:         { label: 'Dijeda',          color: '#FF9800', bg: '#FFF3E0' },
+  rejected:       { label: 'Ditolak',         color: '#C62828', bg: '#FFEBEE' },
   exhausted:      { label: 'Budget Habis',    color: '#F44336', bg: '#FFEBEE' },
 }
 
@@ -14,6 +16,11 @@ function formatRp(n) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency', currency: 'IDR', maximumFractionDigits: 0,
   }).format(n ?? 0)
+}
+
+function formatPercent(clicks, impressions) {
+  if (!impressions || impressions <= 0) return '0.0%'
+  return `${((Number(clicks || 0) / Number(impressions)) * 100).toFixed(1)}%`
 }
 
 function StatusBadge({ status }) {
@@ -66,12 +73,21 @@ export default function AdminAdsPage() {
   }
 
   async function handleReject(adId) {
+    const ad = ads.find((x) => x._id === adId)
+    const remainingBudget = Number(ad?.budget ?? 0)
+    const note = noteMap[adId] ?? 'Ditolak oleh admin'
+
+    const yes = window.confirm(
+      `Tolak iklan ini?\nSisa budget ${formatRp(remainingBudget)} akan dikembalikan ke wallet seller.`
+    )
+    if (!yes) return
+
     setActionId(adId)
     try {
       await adminFetch(`/api/admin/ads/${adId}/reject`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ note: noteMap[adId] ?? 'Ditolak oleh admin' }),
+        body: JSON.stringify({ note }),
       })
       setAds(prev => prev.filter(a => a._id !== adId))
     } catch (err) {
@@ -85,16 +101,27 @@ export default function AdminAdsPage() {
     { key: 'pending_review', label: 'Perlu Review' },
     { key: 'active',         label: 'Aktif' },
     { key: 'paused',         label: 'Dijeda' },
+    { key: 'rejected',       label: 'Ditolak' },
     { key: 'exhausted',      label: 'Selesai' },
   ]
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Iklan Sponsor</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Tinjau dan setujui iklan seller sebelum tayang di feed.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Iklan Sponsor</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Tinjau iklan seller sebelum tayang di feed. Mode prepaid: budget seller dipotong saat create/top-up.
+            </p>
+          </div>
+          <Link
+            href="/admin/ads/analytics"
+            className="rounded-lg bg-[#008080] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#006666]"
+          >
+            📊 Analitik
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -158,12 +185,20 @@ export default function AdminAdsPage() {
 
                     {/* Metrics */}
                     <div className="mt-2 flex flex-wrap gap-4 text-xs text-gray-600">
-                      <span><span className="font-medium">Budget:</span> {formatRp(ad.budget)}</span>
+                      <span><span className="font-medium">Sisa Budget:</span> {formatRp(ad.budget)}</span>
+                      <span><span className="font-medium">Terpakai:</span> {formatRp(ad.totalSpend)}</span>
                       <span><span className="font-medium">CPC:</span> {formatRp(ad.bidPerClick)}</span>
                       <span><span className="font-medium">Tayang:</span> {ad.impressions ?? 0}</span>
                       <span><span className="font-medium">Klik:</span> {ad.clicks ?? 0}</span>
+                      <span><span className="font-medium">CTR:</span> {formatPercent(ad.clicks, ad.impressions)}</span>
                       <span><span className="font-medium">Berlaku s/d:</span> {new Date(ad.validUntil).toLocaleDateString('id-ID')}</span>
                     </div>
+
+                    {ad.reviewNote ? (
+                      <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                        <span className="font-semibold">Catatan Review:</span> {` ${ad.reviewNote}`}
+                      </div>
+                    ) : null}
 
                     {/* Targeting */}
                     {(ad.targeting?.species?.length > 0 || ad.targeting?.categories?.length > 0) && (
@@ -178,11 +213,14 @@ export default function AdminAdsPage() {
                       <div className="mt-3 space-y-2">
                         <input
                           type="text"
-                          placeholder="Catatan admin (opsional)"
+                          placeholder="Catatan admin (opsional saat approve, disarankan saat reject)"
                           value={noteMap[ad._id] ?? ''}
                           onChange={e => setNoteMap(prev => ({ ...prev, [ad._id]: e.target.value }))}
                           className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-xs focus:border-[#008080] focus:outline-none"
                         />
+                        <p className="text-[11px] text-gray-500">
+                          Jika ditolak, sisa budget akan otomatis direfund ke wallet seller.
+                        </p>
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleApprove(ad._id)}
@@ -196,7 +234,7 @@ export default function AdminAdsPage() {
                             disabled={isBusy}
                             className="rounded-lg border border-red-300 px-4 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
                           >
-                            {isBusy ? '...' : 'Tolak'}
+                            {isBusy ? '...' : 'Tolak + Refund'}
                           </button>
                         </div>
                       </div>
