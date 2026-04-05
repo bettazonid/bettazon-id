@@ -8,6 +8,8 @@ const menus = [
   { href: '/admin/dashboard', label: 'Dashboard' },
   { href: '/admin/fee-policy', label: 'Fee Policy' },
   { href: '/admin/order-config', label: 'Konfigurasi Order' },
+  { href: '/admin/subscription-pricing', label: 'Harga Langganan' },
+  { href: '/admin/ads', label: 'Iklan Sponsor' },
   { href: '/admin/withdrawals', label: 'Penarikan' },
   { href: '/admin/products', label: 'Produk' },
   { href: '/admin/orders', label: 'Pesanan' },
