@@ -22,7 +22,21 @@ function formatCurrency(value) {
 function formatDate(value) {
   if (!value) return '—'
   const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return value
+  if (Number.isNaN(d.getTime())) return String(value)
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function formatPeriodLabel(id, groupBy) {
+  if (!id) return '—'
+  if (groupBy === 'week') return id // e.g. "2024-W50"
+  if (groupBy === 'month') {
+    const [year, month] = id.split('-')
+    const d = new Date(Number(year), Number(month) - 1, 1)
+    return d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+  }
+  // day: "2024-12-15"
+  const d = new Date(id + 'T00:00:00')
+  if (Number.isNaN(d.getTime())) return id
   return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
@@ -37,8 +51,9 @@ function StatCard({ label, value, sub, color = 'text-gray-900' }) {
 }
 
 function defaultStart() {
+  // Default: 2 years back to catch all historical data
   const d = new Date()
-  d.setDate(d.getDate() - 29)
+  d.setFullYear(d.getFullYear() - 2)
   return d.toISOString().slice(0, 10)
 }
 
@@ -49,7 +64,7 @@ function defaultEnd() {
 export default function AdminReportsPage() {
   const [startDate, setStartDate] = useState(defaultStart)
   const [endDate, setEndDate] = useState(defaultEnd)
-  const [groupBy, setGroupBy] = useState('day')
+  const [groupBy, setGroupBy] = useState('month')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [report, setReport] = useState(null)
@@ -172,7 +187,7 @@ export default function AdminReportsPage() {
       )}
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Pendapatan Platform"
           value={loading ? '…' : formatCurrency(totals.totalRevenue)}
@@ -180,13 +195,21 @@ export default function AdminReportsPage() {
           color="text-[#FE735C]"
         />
         <StatCard
-          label="Total Transaksi"
-          value={loading ? '…' : (totals.totalTransactions?.toLocaleString('id-ID') ?? '—')}
+          label="Fee Order (Direct/Lelang)"
+          value={loading ? '…' : formatCurrency(totals.totalOrderRevenue)}
+          sub="Dari order yang selesai"
           color="text-[#008080]"
+        />
+        <StatCard
+          label="Pendapatan Iklan Sponsor"
+          value={loading ? '…' : formatCurrency(totals.totalAdRevenue)}
+          sub="Budget iklan prepaid seller"
+          color="text-purple-600"
         />
         <StatCard
           label="Rata-rata per Transaksi"
           value={loading ? '…' : formatCurrency(totals.averagePerTransaction)}
+          sub={`${totals.totalTransactions?.toLocaleString('id-ID') ?? '0'} transaksi`}
         />
       </div>
 
@@ -216,48 +239,54 @@ export default function AdminReportsPage() {
                     Periode
                   </th>
                   <th className="text-right px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Jumlah Transaksi
+                    Fee Order
                   </th>
                   <th className="text-right px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Pendapatan
+                    Iklan
                   </th>
                   <th className="text-right px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Rata-rata
+                    Total
+                  </th>
+                  <th className="text-right px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Transaksi
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {rows.map((row, i) => {
-                  const avg = row.count > 0 ? row.revenue / row.count : 0
-                  return (
-                    <tr key={i} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-2.5 text-gray-700 font-medium whitespace-nowrap">
-                        {formatDate(row._id)}
-                      </td>
-                      <td className="px-4 py-2.5 text-right text-gray-600 tabular-nums">
-                        {row.count?.toLocaleString('id-ID') ?? '—'}
-                      </td>
-                      <td className="px-4 py-2.5 text-right font-semibold text-[#FE735C] tabular-nums">
-                        {formatCurrency(row.revenue)}
-                      </td>
-                      <td className="px-4 py-2.5 text-right text-gray-500 tabular-nums">
-                        {formatCurrency(avg)}
-                      </td>
-                    </tr>
-                  )
-                })}
+                {rows.map((row, i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-2.5 text-gray-700 font-medium whitespace-nowrap">
+                      {formatPeriodLabel(row._id, groupBy)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-[#008080] tabular-nums">
+                      {formatCurrency(row.orderRevenue ?? 0)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-purple-600 tabular-nums">
+                      {formatCurrency(Math.max(0, row.adRevenue ?? 0))}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-[#FE735C] tabular-nums">
+                      {formatCurrency(row.revenue ?? 0)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-gray-500 tabular-nums">
+                      {(row.count ?? 0).toLocaleString('id-ID')}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
               <tfoot>
                 <tr className="bg-gray-50 border-t border-gray-200 font-semibold">
                   <td className="px-4 py-2.5 text-gray-700">Total</td>
-                  <td className="px-4 py-2.5 text-right text-gray-700 tabular-nums">
-                    {totals.totalTransactions?.toLocaleString('id-ID') ?? '—'}
+                  <td className="px-4 py-2.5 text-right text-[#008080] tabular-nums">
+                    {formatCurrency(totals.totalOrderRevenue)}
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-purple-600 tabular-nums">
+                    {formatCurrency(totals.totalAdRevenue)}
                   </td>
                   <td className="px-4 py-2.5 text-right text-[#FE735C] tabular-nums">
                     {formatCurrency(totals.totalRevenue)}
                   </td>
                   <td className="px-4 py-2.5 text-right text-gray-500 tabular-nums">
-                    {formatCurrency(totals.averagePerTransaction)}
+                    {totals.totalTransactions?.toLocaleString('id-ID') ?? '—'}
                   </td>
                 </tr>
               </tfoot>
