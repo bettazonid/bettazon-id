@@ -2,16 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-const IS_CLOSED_TESTING = true;
+const IS_CLOSED_TESTING = false;
 const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=id.bettazon.app';
-const WHATSAPP_BETA_MESSAGE = encodeURIComponent(
-  `Halo Admin Bettazon 👋\n\nSaya ingin gabung sebagai beta tester Android Bettazon.\n\nData saya:\n- Nama: \n- Email Google Play: \n- No. WhatsApp: \n- Device Android (merk/model): \n\nMohon panduan langkah selanjutnya ya. Terima kasih 🙏`
-);
-const BETA_TESTER_WHATSAPP_URL =
-  `https://wa.me/6282186287929?text=${WHATSAPP_BETA_MESSAGE}`;
-const ANDROID_BETA_OPT_IN_URL =
-  'https://play.google.com/apps/testing/id.bettazon.app';
 const APP_STORE_URL = 'https://apps.apple.com/app/bettazon/id0000000000'; // TODO: ganti dengan ID App Store sebenarnya
 
 const typeConfig = {
