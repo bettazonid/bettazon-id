@@ -49,7 +49,7 @@ const sections = [
             <li>Riwayat pembelian, penjualan, dan penawaran lelang</li>
             <li>Riwayat transaksi dompet digital (saldo, top-up, penarikan)</li>
             <li>
-              Data pembayaran diproses oleh gateway pembayaran pihak ketiga (Midtrans/iPaymu) —
+              Data pembayaran diproses oleh payment gateway berlisensi resmi —
               kami <strong>tidak menyimpan</strong> data kartu kredit/debit secara langsung
             </li>
           </ul>
@@ -123,7 +123,7 @@ const sections = [
               desc: 'Nama dan foto profil Anda dapat dilihat pengguna lain dalam konteks transaksi, chat, atau sesi live streaming.',
             },
             {
-              title: 'Layanan Pembayaran (Midtrans & iPaymu)',
+              title: 'Layanan Pembayaran',
               desc: 'Informasi transaksi diteruskan ke gateway pembayaran untuk memproses pembayaran secara aman.',
             },
             {

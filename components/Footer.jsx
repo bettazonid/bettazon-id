@@ -139,7 +139,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-gray-500 pt-1">
-                Pembayaran diproses melalui iPaymu. Layanan tersedia untuk seluruh Indonesia.
+                Pembayaran diproses melalui payment gateway berlisensi Bank Indonesia. Layanan tersedia untuk seluruh Indonesia.
               </li>
               <li className="text-gray-500 pt-2 text-xs border-t border-gray-700 mt-3 leading-relaxed">
                 <strong>Bettazon.id</strong><br />

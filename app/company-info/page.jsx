@@ -57,19 +57,36 @@ export default function CompanyInfoPage() {
         <section className="rounded-2xl border border-[#008080]/20 bg-[#008080]/5 p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">💳 Metode Pembayaran Resmi</h2>
           <div className="space-y-4">
-            <div>
-              <p className="font-semibold text-gray-900 mb-2">iPaymu</p>
-              <p className="text-gray-700 leading-relaxed">
-                Bettazon.id menggunakan <strong>iPaymu</strong> sebagai metode pembayaran utama untuk semua transaksi, 
-                top up wallet, dan checkout. iPaymu menyediakan berbagai metode pembayaran yang aman dan terpercaya termasuk 
-                transfer bank, e-wallet, dan metode pembayaran digital lainnya.
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-xl bg-white border border-gray-100 p-4 shadow-sm">
+                <p className="font-semibold text-gray-900 mb-1">Transfer Bank &amp; Virtual Account</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  BCA, BNI, BRI, Mandiri, Permata, dan bank lainnya melalui sistem Virtual Account yang aman dan terverifikasi otomatis.
+                </p>
+              </div>
+              <div className="rounded-xl bg-white border border-gray-100 p-4 shadow-sm">
+                <p className="font-semibold text-gray-900 mb-1">Dompet Digital &amp; QRIS</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  GoPay, ShopeePay, OVO, Dana, dan QRIS universal untuk kemudahan pembayaran dari genggaman tangan.
+                </p>
+              </div>
+              <div className="rounded-xl bg-white border border-gray-100 p-4 shadow-sm">
+                <p className="font-semibold text-gray-900 mb-1">Kartu Kredit &amp; Debit</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Visa, Mastercard, dan JCB dengan proteksi 3D Secure untuk keamanan transaksi optimal.
+                </p>
+              </div>
+              <div className="rounded-xl bg-white border border-gray-100 p-4 shadow-sm">
+                <p className="font-semibold text-gray-900 mb-1">Minimarket</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Indomaret dan Alfamart — bayar tunai di minimarket terdekat tanpa perlu rekening bank.
+                </p>
+              </div>
             </div>
             <div className="border-t border-[#008080]/20 pt-4">
-              <p className="text-sm text-gray-600">
-                Semua transaksi melalui iPaymu dilindungi oleh sistem keamanan dan verifikasi pembayaran. 
-                Pengguna Bettazon.id dapat melakukan top up wallet, checkout, dan transaksi lainnya dengan aman melalui 
-                berbagai metode pembayaran yang disediakan oleh iPaymu.
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Semua transaksi diproses melalui <strong>payment gateway berlisensi Bank Indonesia</strong> dengan enkripsi SSL/TLS end-to-end. 
+                Sistem escrow kami memastikan dana buyer tersimpan aman hingga produk dikonfirmasi diterima.
               </p>
             </div>
           </div>
@@ -136,9 +153,9 @@ export default function CompanyInfoPage() {
         {/* Verification Banner */}
         <section className="rounded-2xl border-2 border-[#FE735C]/30 bg-[#FE735C]/5 p-6">
           <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>Verifikasi iPaymu:</strong> Bettazon.id adalah platform marketplace yang terdaftar dan terverifikasi 
-            dengan iPaymu sebagai payment gateway resmi. Semua informasi kontak, alamat, dan metode pembayaran yang tercantum 
-            di halaman ini adalah informasi resmi Bettazon.id dan dapat diverifikasi.
+            <strong>🔒 Keamanan Transaksi:</strong> Bettazon.id bekerja sama dengan payment gateway berlisensi resmi 
+            Bank Indonesia. Seluruh data pembayaran dienkripsi dan tidak pernah disimpan di server kami. 
+            Sistem escrow kami menjamin keamanan dana hingga transaksi selesai dan dikonfirmasi kedua belah pihak.
           </p>
         </section>
       </div>

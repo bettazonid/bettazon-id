@@ -501,7 +501,7 @@ function TrustSupportSection() {
     {
       title: 'Pembayaran Aman',
       description:
-        'Bettazon.id menggunakan iPaymu sebagai metode pembayaran utama untuk top up wallet dan transaksi. Sistem escrow melindungi setiap transaksi pembeli dan penjual.',
+        'Bettazon.id menggunakan payment gateway berlisensi Bank Indonesia untuk semua transaksi, top up wallet, dan checkout. Tersedia berbagai metode pembayaran yang aman, terverifikasi, dan terpercaya. Sistem escrow melindungi setiap transaksi pembeli dan penjual.',
       ctaLabel: 'Lihat FAQ',
       ctaHref: '/faq',
     },
