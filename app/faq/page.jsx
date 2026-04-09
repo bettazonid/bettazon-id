@@ -65,7 +65,7 @@ export default function FaqPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-2">Kontak & Informasi Perusahaan</h2>
           <div className="space-y-2 text-gray-700">
             <p>📧 Support umum: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
-            <p>🔒 Privasi & data pribadi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
+            <p>🔒 Privasi & data pribadi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">privacy@bettazon.id</a></p>
             <p>🌐 Website: <span className="font-medium">https://bettazon.id</span></p>
             <p>📍 Alamat: <a href="/company-info" className="text-[#008080] font-medium hover:underline">Lihat informasi perusahaan lengkap</a></p>
             <p>📍 Wilayah layanan: Indonesia</p>
