@@ -19,6 +19,7 @@ const menus = [
   { href: '/admin/users', label: 'Pengguna' },
   { href: '/admin/chats', label: 'Chat Support' },
   { href: '/admin/transactions', label: 'Transaksi' },
+  { href: '/admin/international-shipping', label: 'Pengiriman Internasional' },
   { href: '/admin/cron-jobs', label: 'Cron Jobs' },
 ]
 
