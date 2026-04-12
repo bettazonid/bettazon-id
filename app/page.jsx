@@ -72,10 +72,10 @@ function HeroSection() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
             {[
-              { number: '10.000+', label: 'Pengguna Aktif' },
-              { number: '5.000+', label: 'Produk Tersedia' },
-              { number: '1.000+', label: 'Penjual Terdaftar' },
-              { number: '99%', label: 'Transaksi Sukses' },
+              { number: 'Baru!', label: 'Platform Diluncurkan' },
+              { number: '0%', label: 'Fee Founding Seller' },
+              { number: 'Gratis', label: 'Daftar & Mulai Jualan' },
+              { number: 'Escrow', label: 'Setiap Transaksi Aman' },
             ].map(({ number, label }) => (
               <div
                 key={label}
@@ -496,6 +496,86 @@ function SellerSection() {
 }
 
 // ─── TRUST & SUPPORT ─────────────────────────────────────────────────────────
+// ─── FOUNDING SELLER ──────────────────────────────────────────────────────────────
+function FoundingSellerSection() {
+  return (
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-[#FE735C]/5 via-white to-[#008080]/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#e5634d] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
+          {/* Decorative circles */}
+          <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2" />
+          <div className="relative">
+            {/* Urgency badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 border border-white/30 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+              🎉 Founding Seller — Slot Terbatas
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-bold mb-4 leading-tight">
+              Jadi Founding Seller Bettazon.id
+            </h2>
+            <p className="text-xl sm:text-2xl font-semibold text-white/90 mb-3">
+              Bergabung sekarang &amp; nikmati{' '}
+              <span className="underline decoration-white/60">0% fee</span>{' '}
+              untuk 3 bulan pertama
+            </p>
+            <p className="text-white/80 text-base sm:text-lg mb-8 max-w-xl mx-auto">
+              Slot terbatas — daftar sebelum penuh dan jadilah bagian dari gelombang pertama
+              penjual di marketplace ikan hias terbesar Indonesia.
+            </p>
+            {/* Benefit pills */}
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              {[
+                '0% fee 3 bulan pertama',
+                'Badge Founding Seller',
+                'Prioritas tampil di pencarian',
+                'Support langsung dari tim',
+              ].map((b) => (
+                <div
+                  key={b}
+                  className="flex items-center gap-2 bg-white/15 border border-white/25 px-4 py-2 rounded-full text-sm font-medium"
+                >
+                  <svg
+                    className="w-4 h-4 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  {b}
+                </div>
+              ))}
+            </div>
+            <a
+              href="#unduh"
+              className="inline-flex items-center gap-3 bg-white text-[#FE735C] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-2xl hover:-translate-y-0.5"
+            >
+              Daftar Sekarang — Gratis
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+            <p className="text-white/60 text-sm mt-4">
+              Slot terbatas · Gratis daftar · Berlaku selama masa launching
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function TrustSupportSection() {
   const cards = [
     {
@@ -515,7 +595,7 @@ function TrustSupportSection() {
     {
       title: 'Bantuan & Legal',
       description:
-        'Hubungi official@bettazon.id untuk bantuan transaksi dan official@bettazon.id untuk pertanyaan privasi. Syarat layanan tersedia publik di website ini.',
+        'Hubungi official@bettazon.id untuk bantuan transaksi dan privacy@bettazon.id untuk pertanyaan privasi. Syarat layanan tersedia publik di website ini.',
       ctaLabel: 'Syarat & Ketentuan',
       ctaHref: '/terms',
     },
@@ -558,7 +638,7 @@ function TrustSupportSection() {
         <div className="mt-8 rounded-2xl border border-[#008080]/20 bg-[#008080]/5 p-6 text-sm text-gray-700">
           <p className="font-semibold text-gray-900 mb-2">Kontak publik</p>
           <p>Support umum: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
-          <p>Pertanyaan privasi: <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">official@bettazon.id</a></p>
+          <p>Pertanyaan privasi: <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">privacy@bettazon.id</a></p>
           <p>Wilayah layanan: Indonesia</p>
         </div>
       </div>
@@ -652,6 +732,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <LiveHighlightSection />
         <SellerSection />
+        <FoundingSellerSection />
         <TrustSupportSection />
         <DownloadSection />
       </main>

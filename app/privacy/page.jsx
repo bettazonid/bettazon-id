@@ -256,8 +256,8 @@ const sections = [
         </div>
         <p className="text-gray-600 text-sm">
           Untuk menggunakan hak-hak di atas, hubungi kami di{' '}
-          <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">
-            official@bettazon.id
+          <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">
+            privacy@bettazon.id
           </a>
           . Kami akan merespons permintaan Anda dalam waktu 14 hari kerja.
         </p>
@@ -275,8 +275,8 @@ const sections = [
         Kami tidak dengan sengaja mengumpulkan data pribadi dari anak-anak di bawah 17 tahun. Jika
         Anda mengetahui bahwa anak di bawah umur telah memberikan data pribadi kepada kami,
         silakan hubungi kami segera di{' '}
-        <a href="mailto:official@bettazon.id" className="text-[#008080] font-medium hover:underline">
-          official@bettazon.id
+        <a href="mailto:privacy@bettazon.id" className="text-[#008080] font-medium hover:underline">
+          privacy@bettazon.id
         </a>{' '}
         agar kami dapat menghapus informasi tersebut.
       </p>
@@ -442,10 +442,10 @@ export default function PrivacyPage() {
                   <div className="flex items-center gap-3 text-gray-700">
                     <span className="text-xl flex-shrink-0">💬</span>
                     <a
-                      href="mailto:official@bettazon.id"
+                      href="mailto:privacy@bettazon.id"
                       className="text-[#008080] hover:underline font-medium"
                     >
-                      official@bettazon.id
+                      privacy@bettazon.id
                     </a>
                   </div>
                   <div className="flex items-center gap-3 text-gray-700">

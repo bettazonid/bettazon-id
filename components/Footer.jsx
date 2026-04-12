@@ -124,7 +124,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@bettazon.id"
+                  href="mailto:official@bettazon.id"
                   className="hover:text-[#FE735C] transition-colors"
                 >
                   Hubungi Kami
