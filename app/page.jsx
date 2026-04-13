@@ -34,7 +34,8 @@ function HeroSection() {
           {/* Description */}
           <p className="text-xl text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
             Temukan ribuan jenis ikan hias dari penjual terpercaya. Ikuti lelang live, saksikan
-            ikan secara langsung lewat streaming, dan nikmati pengiriman aman ke seluruh Indonesia.
+            ikan secara langsung lewat streaming, dan nikmati pengiriman aman ke seluruh Indonesia
+            &mdash; termasuk ekspor ke mancanegara.
           </p>
 
           {/* CTAs */}
@@ -453,6 +454,127 @@ function LiveHighlightSection() {
   )
 }
 
+// ─── GLOBAL REACH ───────────────────────────────────────────────────────────
+function GlobalReachSection() {
+  const benefits = [
+    {
+      icon: (
+        <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+          <line x1="1" y1="10" x2="23" y2="10" />
+        </svg>
+      ),
+      title: 'Pembayaran Internasional',
+      description:
+        'Pembeli dari luar negeri bisa langsung checkout menggunakan kartu Visa atau Mastercard. Didukung payment gateway berlisensi — aman, real-time, tanpa perlu rekening Indonesia.',
+    },
+    {
+      icon: (
+        <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+        </svg>
+      ),
+      title: 'Jaringan Transhipper',
+      description:
+        'Sistem transhipper terintegrasi di dalam aplikasi. Seller cukup kirim ikan ke warehouse mitra lokal, transhipper profesional yang mengurus pengiriman internasional ke negara tujuan.',
+    },
+    {
+      icon: (
+        <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      ),
+      title: 'Ekspor dari Rumah',
+      description:
+        'Seller tidak perlu repot urusan ekspor. Jadilah penjual global dari kenyamanan rumah Anda. Bettazon.id yang menyediakan infrastruktur pengiriman lintas batas.',
+    },
+  ]
+
+  const countries = [
+    { flag: '\uD83C\uDDF8\uD83C\uDDEC', name: 'Singapura' },
+    { flag: '\uD83C\uDDF2\uD83C\uDDFE', name: 'Malaysia' },
+    { flag: '\uD83C\uDDEF\uD83C\uDDF5', name: 'Jepang' },
+    { flag: '\uD83C\uDDE6\uD83C\uDDFA', name: 'Australia' },
+    { flag: '\uD83C\uDDFA\uD83C\uDDF8', name: 'USA' },
+    { flag: '\uD83C\uDDE9\uD83C\uDDEA', name: 'Jerman' },
+    { flag: '\uD83C\uDDF3\uD83C\uDDF1', name: 'Belanda' },
+    { flag: '\uD83C\uDDF9\uD83C\uDDFC', name: 'Taiwan' },
+  ]
+
+  return (
+    <section className="py-20 sm:py-28 bg-gradient-to-br from-gray-900 via-[#003333] to-gray-900 text-white relative overflow-hidden">
+      {/* Decorative blobs */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-[#008080]/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FE735C]/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 bg-[#008080]/30 border border-[#008080]/50 text-teal-300 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            Pasar Global
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold mb-5">
+            Jual ke Seluruh Dunia,{' '}
+            <span className="text-[#FE735C]">Langsung dari Indonesia</span>
+          </h2>
+          <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Bettazon.id dibangun untuk pasar global. Pembeli dari luar negeri bisa langsung membayar
+            dengan kartu internasional, dan seller tidak perlu pusing soal pengiriman ekspor.
+          </p>
+        </div>
+
+        {/* Benefit cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+          {benefits.map((b) => (
+            <div
+              key={b.title}
+              className="bg-white/5 border border-white/10 rounded-2xl p-7 hover:bg-white/10 transition-colors"
+            >
+              <div className="w-14 h-14 bg-[#008080]/30 rounded-2xl flex items-center justify-center text-teal-300 mb-5">
+                {b.icon}
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{b.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{b.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Country pills */}
+        <div className="text-center mb-10">
+          <p className="text-sm text-gray-500 uppercase tracking-widest mb-4">Target Pasar</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {countries.map((c) => (
+              <span
+                key={c.name}
+                className="inline-flex items-center gap-2 bg-white/8 border border-white/10 text-gray-200 px-4 py-2 rounded-full text-sm font-medium"
+              >
+                <span className="text-base">{c.flag}</span>
+                {c.name}
+              </span>
+            ))}
+            <span className="inline-flex items-center gap-1 text-gray-500 text-sm px-2 py-2">dan banyak lagi...</span>
+          </div>
+        </div>
+
+        {/* Footer note */}
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4">
+            <p className="text-gray-400 text-sm">
+              <span className="text-teal-400 font-semibold">Semua harga dan transaksi dalam Rupiah (IDR).</span>
+              {' '}Konversi mata uang ditangani otomatis oleh bank penerbit kartu pembeli &mdash;
+              seller tidak perlu memikirkan kurs atau transfer valas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── SELLER CTA ───────────────────────────────────────────────────────────────
 function SellerSection() {
   return (
@@ -732,6 +854,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <LiveHighlightSection />
         <SellerSection />
+        <GlobalReachSection />
         <FoundingSellerSection />
         <TrustSupportSection />
         <DownloadSection />
