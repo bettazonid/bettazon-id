@@ -21,9 +21,16 @@ export default function WhatsAppQRPage() {
 
   useEffect(() => {
     fetchStatus()
+  }, [fetchStatus])
+
+  useEffect(() => {
+    // Tidak perlu polling terus-menerus kalau sudah connected.
+    // Cukup polling saat status belum connected agar log API tidak berulang.
+    if (status?.connected) return
+
     const interval = setInterval(fetchStatus, 15000)
     return () => clearInterval(interval)
-  }, [fetchStatus])
+  }, [fetchStatus, status?.connected])
 
   return (
     <div className="max-w-lg mx-auto">
@@ -53,6 +60,12 @@ export default function WhatsAppQRPage() {
             </div>
             <h2 className="text-lg font-semibold text-green-700 mb-1">WhatsApp Terhubung</h2>
             <p className="text-sm text-gray-500">Sesi aktif — OTP siap dikirim ke pengguna.</p>
+            <button
+              onClick={fetchStatus}
+              className="mt-4 px-4 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              Cek Ulang Status
+            </button>
           </div>
         )}
 

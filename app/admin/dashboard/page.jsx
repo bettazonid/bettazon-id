@@ -72,6 +72,8 @@ export default function AdminDashboardPage() {
       : health?.redis?.connected === false
       ? 'disconnected'
       : 'unknown')
+  const waStatus = health?.whatsapp?.status || 'unknown'
+  const waConnected = health?.whatsapp?.connected === true
 
   return (
     <div>
@@ -93,6 +95,7 @@ export default function AdminDashboardPage() {
           <p>Status: <span className="font-medium text-gray-900">{health?.status || 'unknown'}</span></p>
           <p>Database: <span className="font-medium text-gray-900">{health?.database?.status || 'unknown'}</span></p>
           <p>Redis: <span className="font-medium text-gray-900">{redisStatus}</span></p>
+          <p>WhatsApp OTP: <span className={`font-medium ${waConnected ? 'text-emerald-700' : 'text-gray-900'}`}>{waStatus}</span></p>
         </div>
       </div>
     </div>

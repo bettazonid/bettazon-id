@@ -1,39 +1,37 @@
 # Bettazon.id Web + Docs
 
-## Purpose
-This repo is a hybrid of:
-- a small Next.js marketing/deep-link site in `app/` and `components/`
-- the product/architecture source of truth in `docs/`
+## Big picture
+- This repo combines a Next.js App Router frontend and product docs: public marketing/deep-link pages in `app/` + `components/`, internal admin panel in `app/admin/*`, and architecture source-of-truth docs in `docs/`.
+- If docs and implementation diverge, treat `docs/` as intended behavior, then verify shipped behavior in `bettazon-id-be` and `bettazon-id-app`.
 
-If code and docs disagree about platform behavior, prefer `docs/` for intended business rules and use the app/backend repos to verify implementation status.
+## Runtime architecture and boundaries
+- Public routes are mostly static JSX with Tailwind (example: `app/page.jsx`, `app/privacy/page.jsx`).
+- Deep-link routes (`app/product/[slug]/page.jsx`, `app/auction/[id]/page.jsx`, `app/live/[id]/page.jsx`) only set metadata and delegate to `components/AppLanding.jsx`.
+- Admin panel is client-side (`'use client'`) and talks directly to backend REST via `lib/adminApi.js` using bearer token from `localStorage` (`admin_token`).
+- Realtime admin chat (`app/admin/chats/page.jsx`) uses `socket.io-client` with `auth: { token }`; keep REST + websocket behavior aligned.
 
-## What the web app actually does
-- `app/page.jsx` is a static landing page with large inline sections and Tailwind utility classes.
-- `app/product/[slug]/page.jsx`, `app/auction/[id]/page.jsx`, and `app/live/[id]/page.jsx` only generate metadata and render `components/AppLanding.jsx`.
-- `components/AppLanding.jsx` is the core behavior: mobile deep-link handoff to the Flutter app with Android intent fallback and iOS custom-scheme fallback.
-- `app/privacy/page.jsx` is a long static legal page; keep edits content-focused and do not over-componentize it unless repeated patterns justify it.
+## Cross-repo contracts (do not break)
+- Deep links must stay compatible with Flutter `deepLinkToPath` in `bettazon-id-app/lib/router.dart`.
+- Keep deep-link shape exactly: `bettazon://bettazon.id/<type>/<id>` and Android intent host `bettazon.id`.
+- API base URL comes from `NEXT_PUBLIC_API_BASE_URL` (fallback `http://localhost:5000`) in `lib/adminApi.js`.
+- Backend error payloads are multilingual objects; frontend pattern is `message.id || message.en || error.id || error.en`.
 
-## Cross-repo contract
-- Deep-link URLs here must stay aligned with Flutter parsing in `bettazon-id-app/lib/router.dart` (`deepLinkToPath`).
-- Use paths shaped like `bettazon://bettazon.id/<type>/<id>` and Android intent URLs with host `bettazon.id`; do not switch to `bettazon://<type>/<id>`.
-- The current App Store URL in `components/AppLanding.jsx` is a placeholder; do not treat it as production truth without confirmation.
+## Project-specific coding patterns
+- Use path alias `@/*` from `jsconfig.json`; prefer `@/components/...` imports over deep relative paths.
+- Keep Indonesian copy/tone for user-facing/admin UI text.
+- Styling is utility-first Tailwind inline; avoid introducing CSS modules/design-system abstractions unless repeated pain is clear.
+- Brand colors are used directly in JSX (`#FE735C`, `#008080`) across marketing/admin screens.
+- For metadata/SEO, follow existing `generateMetadata` + `metadataBase` + Open Graph patterns (`app/layout.js`, dynamic route pages).
+- For admin auth gating, follow `app/admin/layout.js` redirect flow (`/admin/login` vs `/admin/dashboard`).
+- For binary exports in admin pages, use `adminDownload(...)` (raw `Response`) instead of `adminFetch(...)` JSON parsing.
+- Preserve `next.config.mjs` `.well-known` headers (Android App Links verification depends on this behavior).
 
-## Styling conventions
-- This repo uses plain App Router components with Tailwind; there is no shared design system layer.
-- Brand colors are repeated directly in JSX: `#FE735C` and `#008080`.
-- Prefer matching the current utility-first style over introducing CSS modules or new abstraction layers.
-
-## Metadata and SEO
-- Route-level metadata lives in `app/layout.js` and per-page `generateMetadata` functions.
-- When adding public pages, set Indonesian copy, `metadataBase`, and Open Graph fields consistently with existing route pages.
-
-## Docs workflow
-- Start architecture/product work from `docs/ARCHITECTURE.md`, `docs/API_DESIGN.md`, `docs/AUCTION_SPEC.md`, `docs/LIVE_STREAMING_SPEC.md`, and `docs/SHIPPING_SPEC.md`.
-- This project is an ornamental fish marketplace with direct buy, page auctions, live auctions, escrow, and domestic/international shipping.
-- Backend heritage from Setorin matters historically, but new docs should use Bettazon roles and flows (`buyer`, `seller`, live commerce) rather than legacy waste-management terminology.
+## High-value docs to read first
+- `docs/ARCHITECTURE.md`, `docs/API_DESIGN.md`, `docs/AUCTION_SPEC.md`, `docs/LIVE_STREAMING_SPEC.md`, `docs/SHIPPING_SPEC.md`, `docs/ADMIN_PANEL_PLAN.md`.
 
 ## Developer workflow
-- Install with `npm install`.
-- Run locally with `npm run dev`.
-- Validate production build with `npm run build`.
-- Lint with `npm run lint`.
+- Install: `npm install`
+- Local web: `npm run dev`
+- Lint: `npm run lint`
+- Prod build check: `npm run build`
+- For full feature testing, run backend repo (`bettazon-id-be`) on port `5000` so admin/deep-link flows resolve correctly.
