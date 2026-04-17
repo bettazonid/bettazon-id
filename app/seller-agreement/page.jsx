@@ -79,7 +79,7 @@ export default function SellerAgreementPage() {
 
       <Section title="Pasal 5 — Harga dan Komisi">
         <p>5.1 Seller menetapkan harga jual produk secara mandiri.</p>
-        <p>5.2 Bettazon memungut komisi atas setiap transaksi yang berhasil. Besaran komisi tercantum pada halaman Kebijakan Biaya di Platform dan dapat berubah sewaktu-waktu dengan pemberitahuan 14 hari sebelumnya.</p>
+        <p>5.2 Bettazon memungut komisi atas setiap transaksi yang berhasil. Besaran komisi saat ini adalah <strong>10% (sepuluh persen)</strong> dari nilai transaksi dan tercantum pada halaman Kebijakan Biaya di Platform. Komisi dapat berubah sewaktu-waktu dengan pemberitahuan 14 hari sebelumnya.</p>
         <p>5.3 Komisi dipotong otomatis dari dana yang masuk ke Wallet Seller.</p>
       </Section>
 
