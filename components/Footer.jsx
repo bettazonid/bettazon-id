@@ -113,6 +113,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/seller-agreement" className="hover:text-[#FE735C] transition-colors">
+                  Perjanjian Seller
+                </Link>
+              </li>
+              <li>
                 <Link href="/refund-policy" className="hover:text-[#FE735C] transition-colors">
                   Refund Policy
                 </Link>

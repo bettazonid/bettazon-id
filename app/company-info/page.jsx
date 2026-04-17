@@ -40,8 +40,8 @@ export default function CompanyInfoPage() {
             </div>
             <div className="border-t border-gray-100 pt-3">
               <p className="text-sm text-gray-500 mb-1">Pertanyaan Privasi & Data Pribadi</p>
-              <a href="mailto:official@bettazon.id" className="text-lg text-[#008080] font-semibold hover:underline">
-                official@bettazon.id
+              <a href="mailto:privacy@bettazon.id" className="text-lg text-[#008080] font-semibold hover:underline">
+                privacy@bettazon.id
               </a>
             </div>
             <div className="border-t border-gray-100 pt-3">

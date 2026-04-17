@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Kebijakan Privasi – Bettazon.id',
@@ -306,12 +307,15 @@ export default function PrivacyPage() {
       <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl">🐠</span>
-              <span className="text-lg font-bold">
-                <span className="text-[#FE735C]">Bettazon</span>
-                <span className="text-[#008080]">.id</span>
-              </span>
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/assets/images/logo.png"
+                alt="Bettazon.id"
+                width={140}
+                height={40}
+                className="object-contain"
+                priority
+              />
             </Link>
             <Link
               href="/"
