@@ -22,6 +22,7 @@ const menus = [
   { href: '/admin/international-shipping', label: 'Pengiriman Internasional' },
   { href: '/admin/cron-jobs', label: 'Cron Jobs' },
   { href: '/admin/whatsapp', label: 'WhatsApp OTP' },
+  { href: '/admin/storage', label: 'Media Bucket' },
 ]
 
 export default function AdminSidebar() {
