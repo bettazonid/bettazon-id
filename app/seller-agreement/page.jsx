@@ -135,6 +135,13 @@ export default function SellerAgreementPage() {
         <p>14.3 Logo, merek, desain, dan seluruh kekayaan intelektual milik Bettazon tidak dapat digunakan oleh Seller untuk tujuan apapun tanpa izin tertulis dari Bettazon.</p>
       </Section>
 
+      <Section title="Pasal 14A — Watermark Otomatis pada Konten Produk">
+        <p>14A.1 <strong>Penerapan Watermark:</strong> Seluruh foto dan video produk yang diunggah melalui platform Bettazon akan secara otomatis diberi tanda air (<em>watermark</em>) &ldquo;bettazon.id&rdquo; oleh sistem pada sisi server. Proses ini berlaku untuk semua konten yang diunggah sejak fitur ini diaktifkan.</p>
+        <p>14A.2 <strong>Tujuan Watermark:</strong> Penerapan watermark bertujuan untuk melindungi integritas konten produk dari penyalahgunaan di luar platform, memperkuat identitas merek Bettazon, dan memberikan bukti keaslian konten yang beredar di internet.</p>
+        <p>14A.3 <strong>Tidak Dapat Dihapus:</strong> Watermark ditanamkan langsung ke dalam file foto/video (baked-in) dan tidak dapat dihapus atau dinonaktifkan oleh Seller. Dengan mengunggah konten, Seller menyetujui penerapan watermark ini.</p>
+        <p>14A.4 <strong>Kepemilikan Konten:</strong> Penerapan watermark tidak mengubah kepemilikan konten — foto dan video tetap menjadi milik Seller sebagaimana diatur dalam Pasal 14.1. Watermark hanya berfungsi sebagai penanda distribusi melalui platform Bettazon.</p>
+      </Section>
+
       <Section title="Pasal 15 — Force Majeure">
         <p>15.1 Bettazon tidak bertanggung jawab atas keterlambatan atau kegagalan pelaksanaan kewajiban yang disebabkan oleh kejadian di luar kendali yang wajar, termasuk bencana alam, gangguan listrik atau internet secara luas, kebijakan pemerintah, pandemi, atau kerusuhan.</p>
         <p>15.2 Dalam kondisi force majeure, Bettazon akan berupaya memberikan notifikasi kepada Seller sesegera mungkin dan mengambil langkah-langkah yang wajar untuk meminimalkan dampak terhadap operasional platform.</p>
