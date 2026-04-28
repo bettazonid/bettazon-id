@@ -7,6 +7,8 @@ export default function WhatsAppQRPage() {
   const [status, setStatus] = useState(null) // null = loading, { connected, hasQr, qrBase64 }
   const [error, setError] = useState(null)
   const [lastRefresh, setLastRefresh] = useState(null)
+  const [resetting, setResetting] = useState(false)
+  const [resetMsg, setResetMsg] = useState(null)
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -19,18 +21,40 @@ export default function WhatsAppQRPage() {
     }
   }, [])
 
+  const handleReset = useCallback(async () => {
+    setResetting(true)
+    setResetMsg(null)
+    try {
+      const data = await adminFetch('/api/admin/whatsapp/reset', { method: 'POST' })
+      setResetMsg(data?.message?.id ?? 'Sesi direset. Tunggu beberapa detik...')
+      // Start polling aggressively after reset to catch the new QR fast
+      setTimeout(fetchStatus, 3000)
+      setTimeout(fetchStatus, 6000)
+      setTimeout(fetchStatus, 10000)
+    } catch (err) {
+      setResetMsg(`Gagal reset: ${err.message}`)
+    } finally {
+      setResetting(false)
+    }
+  }, [fetchStatus])
+
   useEffect(() => {
     fetchStatus()
   }, [fetchStatus])
 
   useEffect(() => {
-    // Tidak perlu polling terus-menerus kalau sudah connected.
-    // Cukup polling saat status belum connected agar log API tidak berulang.
     if (status?.connected) return
-
-    const interval = setInterval(fetchStatus, 15000)
+    // Poll setiap 10 detik saat menunggu QR, 15 detik jika QR sudah tampil
+    const interval = setInterval(fetchStatus, status?.hasQr ? 15000 : 10000)
     return () => clearInterval(interval)
-  }, [fetchStatus, status?.connected])
+  }, [fetchStatus, status?.connected, status?.hasQr])
+
+  const reasonLabel = {
+    loggedOut: '🔓 Sesi logout — nomor di-unlink dari perangkat.',
+    badSession: '⚠ Sesi rusak / korup.',
+    forbidden: '🚫 Akun dibatasi oleh WhatsApp.',
+    connectionReplaced: 'ℹ Koneksi digantikan instance lain.',
+  }
 
   return (
     <div className="max-w-lg mx-auto">
@@ -43,6 +67,12 @@ export default function WhatsAppQRPage() {
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
             ⚠ {error}
+          </div>
+        )}
+
+        {resetMsg && (
+          <div className="mb-4 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+            {resetMsg}
           </div>
         )}
 
@@ -60,12 +90,21 @@ export default function WhatsAppQRPage() {
             </div>
             <h2 className="text-lg font-semibold text-green-700 mb-1">WhatsApp Terhubung</h2>
             <p className="text-sm text-gray-500">Sesi aktif — OTP siap dikirim ke pengguna.</p>
-            <button
-              onClick={fetchStatus}
-              className="mt-4 px-4 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
-            >
-              Cek Ulang Status
-            </button>
+            <div className="mt-4 flex gap-2 justify-center">
+              <button
+                onClick={fetchStatus}
+                className="px-4 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                Cek Ulang Status
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+              >
+                {resetting ? 'Mereset...' : 'Reset Sesi'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -75,15 +114,31 @@ export default function WhatsAppQRPage() {
               <span className="text-3xl">⏳</span>
             </div>
             <h2 className="text-lg font-semibold text-yellow-700 mb-1">QR Belum Tersedia</h2>
+            {status.lastDisconnectReason && (
+              <p className="text-sm text-orange-600 mb-2">
+                {reasonLabel[status.lastDisconnectReason] ?? `Putus: ${status.lastDisconnectReason}`}
+              </p>
+            )}
             <p className="text-sm text-gray-500 mb-4">
-              WhatsApp service sedang memuat. Halaman akan otomatis refresh setiap 15 detik.
+              {status.isConnecting
+                ? 'Sedang menghubungkan kembali, QR akan muncul sebentar lagi...'
+                : 'WhatsApp service sedang memuat. Halaman akan otomatis refresh setiap 10 detik.'}
             </p>
-            <button
-              onClick={fetchStatus}
-              className="px-4 py-2 text-sm rounded-lg bg-[#FE735C] text-white hover:bg-[#e65a43] transition-colors"
-            >
-              Refresh Sekarang
-            </button>
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={fetchStatus}
+                className="px-4 py-2 text-sm rounded-lg bg-[#FE735C] text-white hover:bg-[#e65a43] transition-colors"
+              >
+                Refresh Sekarang
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="px-4 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                {resetting ? 'Mereset...' : '🔄 Reset & Scan Ulang'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -103,12 +158,19 @@ export default function WhatsAppQRPage() {
             <p className="text-xs text-gray-400">
               QR expired setiap ~20 detik. Halaman auto-refresh tiap 15 detik.
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex gap-2 justify-center">
               <button
                 onClick={fetchStatus}
                 className="px-4 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 Refresh QR
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+              >
+                {resetting ? 'Mereset...' : '🔄 Generate QR Baru'}
               </button>
             </div>
           </div>
