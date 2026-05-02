@@ -892,8 +892,6 @@ function DownloadSection() {
     </section>
   )
 }
-  )
-}
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
