@@ -164,7 +164,7 @@ const features = [
     iconId: 'live',
     title: 'Live Streaming + Lelang Live',
     description:
-      'Seller bisa siaran langsung dari kandang dan jalankan lelang real-time. Pembeli tonton kondisi ikan secara live dan tawar langsung saat stream berlangsung.',
+      'Seller bisa siaran langsung dari farm dan jalankan lelang real-time. Pembeli tonton kondisi ikan secara live dan tawar langsung saat stream berlangsung.',
     color: 'bg-red-50 border-red-100',
     iconColor: 'text-red-500',
     iconBg: 'bg-red-100',
@@ -398,7 +398,7 @@ function LiveHighlightSection() {
 
             <div className="space-y-3">
               {[
-                'Live streaming langsung dari kandang peternak',
+                'Live streaming langsung dari farm peternak',
                 'Chat real-time dengan penjual saat streaming',
                 'Penawaran lelang live via data packet terenkripsi',
                 'Hasil lelang otomatis tersimpan & diproses',

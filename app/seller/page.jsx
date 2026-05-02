@@ -247,7 +247,7 @@ function HowToSellSection() {
             Cara Mulai Berjualan
           </div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Dari Kandang ke Pembeli{' '}
+            Dari Farm ke Pembeli{' '}
             <br />
             <span className="text-[#FE735C]">Semudah 4 Langkah</span>
           </h2>
