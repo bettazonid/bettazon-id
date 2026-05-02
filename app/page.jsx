@@ -33,9 +33,9 @@ function HeroSection() {
 
           {/* Description */}
           <p className="text-xl text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Temukan ribuan jenis ikan hias dari penjual terpercaya. Ikuti lelang live, saksikan
-            ikan secara langsung lewat streaming, dan nikmati pengiriman aman ke seluruh Indonesia
-            &mdash; termasuk ekspor ke mancanegara.
+            Temukan ribuan jenis ikan hias dari penjual terpercaya — atau{' '}
+            <strong>buka tokomu sendiri</strong> dan jangkau pembeli di seluruh Indonesia.
+            Lelang live, streaming langsung, pengiriman aman, dan ekspor ke mancanegara.
           </p>
 
           {/* CTAs */}
@@ -49,43 +49,45 @@ function HeroSection() {
               </svg>
               {IS_CLOSED_TESTING ? '🚧 Segera Hadir di Play Store' : 'Download di Play Store'}
             </a>
-            <a
-              href="#fitur"
+            <Link
+              href="/seller"
               className="inline-flex items-center gap-2 text-[#008080] hover:text-[#006666] font-semibold text-lg transition-colors group"
             >
-              Lihat Semua Fitur
-              <svg
-                className="w-5 h-5 transition-transform group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </a>
+              Mulai Berjualan →
+            </Link>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
             {[
-              { number: 'Baru!', label: 'Platform Diluncurkan' },
-              { number: '0%', label: 'Fee Founding Seller' },
-              { number: 'Gratis', label: 'Daftar & Mulai Jualan' },
-              { number: 'Escrow', label: 'Setiap Transaksi Aman' },
-            ].map(({ number, label }) => (
-              <div
-                key={label}
-                className="bg-white/80 backdrop-blur rounded-2xl p-4 shadow-sm border border-gray-100"
-              >
-                <div className="text-2xl sm:text-3xl font-bold text-[#FE735C]">{number}</div>
-                <div className="text-xs sm:text-sm text-gray-500 mt-1">{label}</div>
-              </div>
-            ))}
+              { number: 'Baru!', label: 'Platform Diluncurkan', href: null },
+              { number: '0%', label: 'Fee Founding Seller', href: '/seller' },
+              { number: 'Gratis', label: 'Daftar & Mulai Jualan', href: '/seller' },
+              { number: 'Escrow', label: 'Setiap Transaksi Aman', href: null },
+            ].map(({ number, label, href }) => {
+              const content = (
+                <>
+                  <div className="text-2xl sm:text-3xl font-bold text-[#FE735C]">{number}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 mt-1">{label}</div>
+                </>
+              )
+              return href ? (
+                <Link
+                  key={label}
+                  href={href}
+                  className="bg-white/80 backdrop-blur rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-[#008080]/40 hover:shadow-md transition-all"
+                >
+                  {content}
+                </Link>
+              ) : (
+                <div
+                  key={label}
+                  className="bg-white/80 backdrop-blur rounded-2xl p-4 shadow-sm border border-gray-100"
+                >
+                  {content}
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -153,7 +155,7 @@ const features = [
     iconId: 'auction',
     title: 'Lelang Berbatas Waktu',
     description:
-      'Ikuti lelang dengan countdown timer realtime. Auto-extend otomatis jika ada penawaran di menit terakhir — tidak ada yang ketinggalan!',
+      'Seller bisa buka lelang dengan harga mulai sendiri. Pembeli bersaing dengan countdown timer realtime — auto-extend otomatis jika ada penawaran di menit terakhir.',
     color: 'bg-teal-50 border-teal-100',
     iconColor: 'text-[#008080]',
     iconBg: 'bg-[#008080]/10',
@@ -162,7 +164,7 @@ const features = [
     iconId: 'live',
     title: 'Live Streaming + Lelang Live',
     description:
-      'Saksikan ikan langsung dari kandang penjual via live streaming. Ajukan penawaran secara real-time saat stream berlangsung.',
+      'Seller bisa siaran langsung dari kandang dan jalankan lelang real-time. Pembeli tonton kondisi ikan secara live dan tawar langsung saat stream berlangsung.',
     color: 'bg-red-50 border-red-100',
     iconColor: 'text-red-500',
     iconBg: 'bg-red-100',
@@ -231,6 +233,28 @@ function FeaturesSection() {
               <p className="text-gray-600 leading-relaxed">{f.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Seller hook */}
+        <div className="mt-12 rounded-2xl bg-gradient-to-r from-[#008080]/10 to-teal-50 border border-[#008080]/20 px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 bg-[#008080]/15 rounded-xl flex items-center justify-center shrink-0 text-[#008080]">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-gray-900 text-base">Kamu punya ikan hias untuk dijual?</p>
+              <p className="text-gray-500 text-sm mt-0.5">Semua fitur di atas juga tersedia untuk penjual — buka toko gratis, tanpa biaya bulanan.</p>
+            </div>
+          </div>
+          <Link
+            href="/seller"
+            className="shrink-0 inline-flex items-center gap-2 bg-[#008080] hover:bg-[#006666] text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:shadow-lg hover:shadow-[#008080]/25 whitespace-nowrap"
+          >
+            Mulai Berjualan →
+          </Link>
         </div>
       </div>
     </section>
@@ -318,6 +342,8 @@ function HowItWorksSection() {
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Proses yang sederhana dan transparan dari pencarian hingga ikan sampai di tangan kamu.
+            Ingin berjualan?{' '}
+            <Link href="/seller" className="text-[#008080] font-semibold hover:underline">Lihat cara mulai berjualan →</Link>
           </p>
         </div>
 
@@ -398,6 +424,12 @@ function LiveHighlightSection() {
                 />
               </svg>
             </a>
+            <p className="mt-4 text-gray-400 text-sm">
+              Mau jadi penjual yang live seperti ini?{' '}
+              <Link href="/seller" className="text-teal-400 font-semibold hover:text-teal-300 hover:underline">
+                Buka toko gratis →
+              </Link>
+            </p>
           </div>
 
           {/* Mock stream UI */}
@@ -570,6 +602,17 @@ function GlobalReachSection() {
             </p>
           </div>
         </div>
+
+        {/* Seller CTA */}
+        <div className="mt-10 text-center">
+          <p className="text-gray-400 text-base mb-4">Siap jual ikanmu ke pasar global?</p>
+          <Link
+            href="/seller"
+            className="inline-flex items-center gap-2 bg-[#008080] hover:bg-teal-500 text-white px-7 py-3.5 rounded-xl font-bold transition-all hover:shadow-lg hover:shadow-[#008080]/40"
+          >
+            Lihat Cara Mulai Berjualan →
+          </Link>
+        </div>
       </div>
     </section>
   )
@@ -597,18 +640,18 @@ function SellerSection() {
               seluruh Indonesia dan mancanegara.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#unduh"
+              <Link
+                href="/seller"
                 className="inline-flex items-center justify-center gap-2 bg-white text-[#008080] hover:bg-gray-50 px-7 py-3.5 rounded-xl font-bold transition-all hover:shadow-xl"
               >
                 Daftar sebagai Penjual
-              </a>
-              <a
-                href="#fitur"
+              </Link>
+              <Link
+                href="/seller"
                 className="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white hover:bg-white/10 px-7 py-3.5 rounded-xl font-semibold transition-all"
               >
                 Pelajari Selengkapnya
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -671,8 +714,8 @@ function FoundingSellerSection() {
                 </div>
               ))}
             </div>
-            <a
-              href="#unduh"
+            <Link
+              href="/seller"
               className="inline-flex items-center gap-3 bg-white text-[#FE735C] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-2xl hover:-translate-y-0.5"
             >
               Daftar Sekarang — Gratis
@@ -687,7 +730,7 @@ function FoundingSellerSection() {
               >
                 <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-            </a>
+            </Link>
             <p className="text-white/60 text-sm mt-4">
               Slot terbatas · Gratis daftar · Berlaku selama masa launching
             </p>
@@ -838,8 +881,17 @@ function DownloadSection() {
         <p className="text-sm text-gray-400 mt-6">
           {IS_CLOSED_TESTING ? 'Closed Testing' : 'Gratis'} · Android 7.0+ · Update rutin
         </p>
+
+        <p className="mt-6 text-gray-500 text-sm">
+          Mau berjualan dulu?{' '}
+          <Link href="/seller" className="text-[#008080] font-semibold hover:underline">
+            Pelajari cara jadi penjual di Bettazon →
+          </Link>
+        </p>
       </div>
     </section>
+  )
+}
   )
 }
 

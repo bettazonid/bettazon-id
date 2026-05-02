@@ -8,6 +8,7 @@ const navLinks = [
   { href: '#fitur', label: 'Fitur' },
   { href: '#cara-kerja', label: 'Cara Kerja' },
   { href: '#unduh', label: 'Unduh App' },
+  { href: '/seller', label: 'Jadi Seller', isRouterLink: true },
 ]
 
 export default function Navbar() {
@@ -36,7 +37,11 @@ export default function Navbar() {
                 <Link
                   key={label}
                   href={href}
-                  className="text-gray-600 hover:text-[#FE735C] transition-colors font-medium text-sm"
+                  className={`transition-colors font-medium text-sm ${
+                    label === 'Jadi Seller'
+                      ? 'text-[#008080] hover:text-[#006666] font-semibold'
+                      : 'text-gray-600 hover:text-[#FE735C]'
+                  }`}
                 >
                   {label}
                 </Link>
@@ -92,7 +97,11 @@ export default function Navbar() {
                   key={label}
                   href={href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-3 text-gray-700 hover:text-[#FE735C] hover:bg-gray-50 rounded-xl font-medium transition-colors"
+                  className={`block px-3 py-3 rounded-xl font-medium transition-colors ${
+                    label === 'Jadi Seller'
+                      ? 'text-[#008080] hover:text-[#006666] hover:bg-teal-50 font-semibold'
+                      : 'text-gray-700 hover:text-[#FE735C] hover:bg-gray-50'
+                  }`}
                 >
                   {label}
                 </Link>
