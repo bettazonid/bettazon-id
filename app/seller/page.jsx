@@ -205,8 +205,8 @@ function HowToSellSection() {
     },
     {
       step: '02',
-      title: 'Buka Toko & Upload Produk',
-      desc: 'Aktifkan mode seller di profil. Upload foto ikan, isi deskripsi, harga, dan stok. Tokomu langsung live dan bisa ditemukan pembeli.',
+      title: 'Verifikasi & Buka Toko',
+      desc: 'Aktifkan mode seller dan lengkapi verifikasi identitas (KTP) — prosesnya cepat dan datamu aman terenkripsi. Setelah terverifikasi, upload foto ikan, isi harga, dan tokomu langsung live.',
       icon: (
         <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -273,6 +273,46 @@ function HowToSellSection() {
               <p className="text-gray-600 leading-relaxed text-sm">{step.desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── KTP TRUST ───────────────────────────────────────────────────────────────
+function KtpTrustSection() {
+  return (
+    <section className="py-14 sm:py-16 bg-white border-y border-gray-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-br from-teal-50 to-white rounded-3xl border border-teal-100 p-8 sm:p-10 flex flex-col sm:flex-row gap-8 items-start sm:items-center">
+          {/* Shield icon */}
+          <div className="shrink-0 w-16 h-16 bg-[#008080]/10 rounded-2xl flex items-center justify-center">
+            <svg className="w-8 h-8 text-[#008080]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
+              Kenapa perlu verifikasi KTP?
+            </h3>
+            <p className="text-gray-600 text-sm leading-relaxed mb-5">
+              KTP digunakan <strong>hanya untuk memastikan kamu penjual nyata</strong> — bukan bot atau akun palsu.
+              Ini melindungi kamu dan pembeli. Data KTP <strong>tidak pernah dibagikan</strong> ke siapapun.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { icon: '🔒', text: 'Disimpan terenkripsi di server aman' },
+                { icon: '👁️', text: 'Hanya dilihat tim verifikasi Bettazon' },
+                { icon: '🚫', text: 'Tidak dibagikan ke pihak ketiga' },
+                { icon: '✅', text: 'Sesuai regulasi perlindungan data pribadi' },
+              ].map(({ icon, text }) => (
+                <div key={text} className="flex items-center gap-2.5 text-sm text-gray-700">
+                  <span className="text-base">{icon}</span>
+                  {text}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -366,6 +406,10 @@ function SellerFAQSection() {
       q: 'Apa itu live streaming & lelang di Bettazon?',
       a: 'Kamu bisa siaran langsung untuk menampilkan ikanmu secara real-time kepada pembeli. Saat live, kamu bisa mengaktifkan lelang — pembeli langsung menawar dan harga tertinggi menang.',
     },
+    {
+      q: 'Kenapa harus upload KTP untuk jadi seller?',
+      a: 'KTP digunakan semata-mata untuk memverifikasi bahwa kamu adalah penjual nyata — bukan bot atau akun palsu. Ini melindungi kamu sebagai seller dan juga pembeli yang bertransaksi denganmu. Data KTP disimpan terenkripsi di server aman, hanya dilihat tim verifikasi Bettazon, dan tidak pernah dibagikan ke pihak ketiga manapun. Ini adalah standar keamanan yang lazim di marketplace terpercaya, sesuai regulasi perlindungan data pribadi.',
+    },
   ]
 
   return (
@@ -452,6 +496,7 @@ export default function SellerPage() {
         <SellerHero />
         <WhySellSection />
         <HowToSellSection />
+        <KtpTrustSection />
         <FoundingSellerSection />
         <SellerFAQSection />
         <SellerCTA />
