@@ -19,18 +19,17 @@ export default function KebijakanPage() {
         <h2 className="text-lg font-bold text-gray-900 mb-4">✅ Produk yang Boleh Dijual</h2>
         <div className="space-y-2 text-sm text-gray-700">
           {[
-            'Ikan hias air tawar (cupang, koi, arwana, louhan, diskus, dll.)',
-            'Ikan hias air laut (ikan hias laut yang tidak dilindungi)',
-            'Perlengkapan akuarium (filter, pompa, termometer, dll.)',
-            'Tanaman air dan koral hias (yang legal)',
-            'Pakan ikan hidup maupun kering (cacing, artemia, pelet, dll.)',
-            'Aksesoris dan dekorasi akuarium',
+            '🐟 Ikan hias air tawar ukuran kecil — terutama Cupang (Betta splendens) dan variannya',
+            '🐠 Ikan hias air tawar lainnya: Guppy, Tetra, Diskus',
           ].map((item) => (
             <div key={item} className="flex items-start gap-2 bg-green-50 border border-green-100 rounded-xl p-3">
               <span className="text-green-600 font-bold flex-shrink-0 mt-0.5">✓</span>
               <span>{item}</span>
             </div>
           ))}
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
+            <strong>Produk lain menyusul:</strong> Perlengkapan akuarium, pakan ikan, tanaman air, ikan laut, dan kategori pendukung lainnya akan dibuka secara bertahap seiring pertumbuhan platform. Stay tuned!
+          </div>
         </div>
       </section>
 

@@ -61,8 +61,8 @@ const faqs = [
         a: 'Pesanan otomatis dibatalkan dan dana dikembalikan ke pembeli. Pembatalan yang sering terjadi akan mempengaruhi skor performa toko dan dapat berujung pada peringatan akun.',
       },
       {
-        q: 'Apakah saya harus mengirim sendiri atau bisa pakai jasa pickup?',
-        a: 'Kamu bisa pilih: antar langsung ke drop-off kurir, atau gunakan layanan jemput paket (pickup) yang tersedia di beberapa kurir. Pilih sesuai yang paling mudah di kotamu.',
+        q: 'Apakah saya harus mengantar paket sendiri ke kurir?',
+        a: 'Bettazon bekerja sama langsung dengan jasa pengiriman, jadi seller tidak perlu membayar ongkir secara manual. Kamu cukup drop paket ke loket atau titik antar yang ditentukan oleh kurir yang dipilih. Tidak ada proses pickup otomatis saat ini — cukup datang ke counter dan serahkan paket.',
       },
       {
         q: 'Apa yang terjadi jika ikan mati saat pengiriman?',

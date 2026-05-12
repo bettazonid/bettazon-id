@@ -51,7 +51,7 @@ export default function LelangPage() {
         <div className="space-y-3 text-sm text-gray-700">
           {[
             'Buka Kelola Produk → (+) → pilih tipe listing "Lelang Halaman".',
-            'Isi detail produk seperti biasa (nama, foto, deskripsi).',
+            'Pilih produk yang sudah ada di katalog tokomu — tidak perlu upload foto atau isi deskripsi ulang.',
             'Tentukan Harga Awal (opening bid) — disarankan 30–50% dari estimasi harga wajar.',
             'Tentukan Kelipatan Bid Minimum (minimal Rp 1.000, default Rp 10.000).',
             'Tentukan tanggal & jam mulai serta tanggal & jam berakhir secara bebas (min. 5 menit dari sekarang, max. 30 hari).',

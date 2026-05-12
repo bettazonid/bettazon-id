@@ -23,6 +23,10 @@ export default function OngkirPengirimanPage() {
           <p>Bettazon hanya menampilkan <strong>kurir yang telah diverifikasi untuk pengiriman live fish</strong> — bukan semua kurir umum. Daftar kurir diperbarui secara otomatis oleh sistem dan dapat berbeda tergantung kota asal tokomu dan kota tujuan pembeli.</p>
           <p>Saat kamu mengkonfirmasi pesanan, aplikasi akan langsung menampilkan daftar kurir beserta tarif pengiriman yang relevan untuk rute tersebut. Kamu cukup pilih kurir, kirim paket, lalu input resi.</p>
           <div className="bg-white border border-teal-200 rounded-xl p-3">
+            <p className="font-semibold text-[#008080] mb-1">Cara kerja biaya pengiriman:</p>
+            <p>Bettazon bekerja sama langsung dengan jasa pengiriman. <strong>Seller tidak perlu membayar ongkir secara manual</strong> — tagihan pengiriman dikelola antara kurir dan Bettazon. Kamu cukup <strong>drop paket ke loket atau titik yang ditentukan</strong>, sistem akan mengurus sisanya.</p>
+          </div>
+          <div className="bg-white border border-teal-200 rounded-xl p-3">
             <p className="font-semibold text-[#008080] mb-1">Untuk pengiriman internasional:</p>
             <p>Tersedia jaringan <strong>transhipper ikan hias</strong> terintegrasi di aplikasi. Pembeli luar negeri memilih transhipper di negaranya; kamu cukup kirim ke alamat transhipper lokal di Indonesia.</p>
           </div>
@@ -109,7 +113,8 @@ export default function OngkirPengirimanPage() {
               'Pembeli luar negeri checkout dan pilih transhipper di negaranya.',
               'Kamu mengirim ikan ke alamat transhipper lokal (dalam Indonesia).',
               'Transhipper mengurus pengiriman internasional, karantina, dan dokumen ekspor.',
-              'Dana diteruskan ke kamu setelah transhipper mengkonfirmasi penerimaan.',
+              'Pembeli mengkonfirmasi ikan diterima dalam kondisi baik — atau otomatis 3 hari setelah status terkirim.',
+              'Dana masuk ke saldo dompetmu, sama seperti pesanan domestik.',
             ].map((text, i) => (
               <li key={i} className="flex gap-2 items-start">
                 <span className="w-5 h-5 rounded-full bg-[#008080] text-white text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">{i + 1}</span>
@@ -117,6 +122,10 @@ export default function OngkirPengirimanPage() {
               </li>
             ))}
           </ol>
+          <div className="bg-white border border-teal-200 rounded-xl p-3 text-xs text-gray-600">
+            <strong className="text-[#008080]">Mengapa dana cair setelah buyer konfirmasi?</strong>
+            <p className="mt-1">Transhipper adalah perpanjangan kurir — mereka belum tentu mencerminkan kondisi ikan saat sampai ke buyer. Escrow baru release setelah buyer puas, melindungi buyer <em>dan</em> reputasi seller sekaligus. Jika ada masalah di leg transhipper → buyer, Bettazon berperan sebagai mediator.</p>
+          </div>
           <p className="text-gray-500 text-xs border-t border-teal-200 pt-3">Untuk informasi lebih lanjut tentang ekspor ikan hias, hubungi tim Bettazon via WhatsApp.</p>
         </div>
       </section>
