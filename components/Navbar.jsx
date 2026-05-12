@@ -8,6 +8,7 @@ const navLinks = [
   { href: '#fitur', label: 'Fitur' },
   { href: '#cara-kerja', label: 'Cara Kerja' },
   { href: '#unduh', label: 'Unduh App' },
+  { href: '/seller-center', label: 'Seller Center', isRouterLink: true },
   { href: '/seller', label: 'Jadi Seller', isRouterLink: true },
 ]
 

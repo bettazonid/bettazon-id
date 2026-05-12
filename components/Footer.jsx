@@ -88,6 +88,11 @@ export default function Footer() {
                   Jual di Bettazon
                 </Link>
               </li>
+              <li>
+                <Link href="/seller-center" className="hover:text-[#FE735C] transition-colors">
+                  Seller Center
+                </Link>
+              </li>
             </ul>
           </div>
 

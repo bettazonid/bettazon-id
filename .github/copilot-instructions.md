@@ -13,6 +13,7 @@
 ## Cross-repo contracts (do not break)
 - Deep links must stay compatible with Flutter `deepLinkToPath` in `bettazon-id-app/lib/router.dart`.
 - Keep deep-link shape exactly: `bettazon://bettazon.id/<type>/<id>` and Android intent host `bettazon.id`.
+- Only `/product`, `/auction`, `/live` paths are handled by the app — do not add `/privacy`, `/terms`, or other web-only paths to app route prefixes.
 - API base URL comes from `NEXT_PUBLIC_API_BASE_URL` (fallback `http://localhost:5000`) in `lib/adminApi.js`.
 - Backend error payloads are multilingual objects; frontend pattern is `message.id || message.en || error.id || error.en`.
 
