@@ -196,6 +196,26 @@ export default function AdminUsersPage() {
     }
   }
 
+  const handleToggleWaGroup = async (user) => {
+    const sellerRole = user.roles?.find((r) => r.role === 'seller')
+    const current = sellerRole?.sellerData?.waGroupJoined ?? false
+    const confirmMsg = current
+      ? `Tandai ${user.name || user.email} BELUM gabung grup WA?`
+      : `Tandai ${user.name || user.email} sudah gabung grup WA komunitas seller?`
+    if (!window.confirm(confirmMsg)) return
+    try {
+      setActionLoadingUserId(user._id)
+      setActionMsg(null)
+      await adminFetch(`/api/users/${user._id}/wa-group-joined`, { method: 'PATCH' })
+      setActionMsg({ type: 'success', text: `Status grup WA berhasil diperbarui.` })
+      await fetchUsers()
+    } catch (err) {
+      setActionMsg({ type: 'error', text: err.message || 'Gagal update status grup WA.' })
+    } finally {
+      setActionLoadingUserId('')
+    }
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3">
@@ -335,6 +355,7 @@ export default function AdminUsersPage() {
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Verifikasi</th>
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Terdaftar</th>
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Last Login</th>
+                  <th className="px-5 py-3 text-left font-semibold text-gray-700">Grup WA</th>
                   <th className="px-5 py-3 text-center font-semibold text-gray-700">Aksi</th>
                 </tr>
               </thead>
@@ -382,6 +403,29 @@ export default function AdminUsersPage() {
 
                       <td className="px-5 py-3.5 text-xs text-gray-600 whitespace-nowrap">
                         {formatDateTime(user.lastLogin)}
+                      </td>
+
+                      <td className="px-5 py-3.5">
+                        {(() => {
+                          const sellerRole = user.roles?.find((r) => r.role === 'seller')
+                          if (!sellerRole) return <span className="text-xs text-gray-300">—</span>
+                          const joined = sellerRole?.sellerData?.waGroupJoined ?? false
+                          return (
+                            <button
+                              onClick={() => handleToggleWaGroup(user)}
+                              disabled={actionLoadingUserId === user._id}
+                              title={joined ? 'Klik untuk tandai belum gabung' : 'Klik untuk tandai sudah gabung'}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                                joined
+                                  ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+                                  : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
+                              }`}
+                            >
+                              <span>{joined ? '✓' : '○'}</span>
+                              <span>{joined ? 'Sudah Gabung' : 'Belum'}</span>
+                            </button>
+                          )
+                        })()}
                       </td>
 
                       <td className="px-5 py-3.5 text-center">

@@ -20,6 +20,9 @@ const menus = [
   { href: '/admin/chats', label: 'Chat Support' },
   { href: '/admin/transactions', label: 'Transaksi' },
   { href: '/admin/international-shipping', label: 'Pengiriman Internasional' },
+  { href: '/admin/shipping/couriers', label: 'Kurir Domestik' },
+  { href: '/admin/shipping/cities', label: 'Cache Kota (RajaOngkir)' },
+  { href: '/admin/shipping/quarantine', label: 'Aturan Karantina' },
   { href: '/admin/cron-jobs', label: 'Cron Jobs' },
   { href: '/admin/whatsapp', label: 'WhatsApp OTP' },
   { href: '/admin/storage', label: 'Media Bucket' },
@@ -35,8 +38,9 @@ export default function AdminSidebar() {
   }
 
   return (
-    <aside className="w-64 min-h-screen border-r border-gray-200 bg-white p-4">
-      <div className="mb-6">
+    <aside className="w-64 h-screen sticky top-0 flex flex-col border-r border-gray-200 bg-white">
+      {/* Logo — always visible */}
+      <div className="px-4 pt-4 pb-3 shrink-0">
         <div className="text-lg font-bold">
           <span className="text-[#FE735C]">Bettazon</span>
           <span className="text-[#008080]"> Admin</span>
@@ -44,7 +48,8 @@ export default function AdminSidebar() {
         <p className="text-xs text-gray-500 mt-1">Panel Internal</p>
       </div>
 
-      <nav className="space-y-1">
+      {/* Nav — scrollable */}
+      <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-1">
         {menus.map((menu) => {
           const active = pathname === menu.href
           return (
@@ -63,12 +68,15 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <button
-        onClick={handleLogout}
-        className="mt-8 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      >
-        Logout
-      </button>
+      {/* Logout — always visible */}
+      <div className="px-4 py-4 shrink-0 border-t border-gray-100">
+        <button
+          onClick={handleLogout}
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Logout
+        </button>
+      </div>
     </aside>
   )
 }
