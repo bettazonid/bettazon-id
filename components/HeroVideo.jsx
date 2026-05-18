@@ -40,15 +40,31 @@ export default function HeroVideo() {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-950 pt-16">
-      {/* ── Background video ── */}
+
+      {/* ── MOBILE: blurred fill + centered small video ── */}
+      {/* Blur layer as background fill */}
+      <div className="sm:hidden absolute inset-0">
+        <video
+          key={videos[currentIdx].src + '_bg'}
+          src={videos[currentIdx].src}
+          autoPlay muted loop playsInline aria-hidden
+          className="w-full h-full object-cover scale-125 blur-3xl opacity-40"
+        />
+      </div>
+      {/* Centered video tile */}
+      <video
+        key={videos[currentIdx].src + '_mobile'}
+        src={videos[currentIdx].src}
+        autoPlay muted loop playsInline
+        className={`sm:hidden absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%]  shadow-2xl shadow-black/50 transition-opacity duration-500 ${transitioning ? 'opacity-0' : 'opacity-100'}`}
+      />
+
+      {/* ── DESKTOP: full cover background ── */}
       <video
         key={videos[currentIdx].src}
         src={videos[currentIdx].src}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${transitioning ? 'opacity-0' : 'opacity-100'}`}
+        autoPlay muted loop playsInline
+        className={`hidden sm:block absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${transitioning ? 'opacity-0' : 'opacity-100'}`}
       />
 
       {/* ── Cinematic overlays ── */}

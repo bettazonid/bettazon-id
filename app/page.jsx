@@ -44,7 +44,7 @@ function FishShowcaseSection() {
         {fishVideos.map((fish) => (
           <div
             key={fish.name}
-            className="relative rounded-2xl overflow-hidden shrink-0 w-44 sm:w-52 lg:w-56 aspect-[3/4] group cursor-pointer"
+            className="relative rounded-2xl overflow-hidden shrink-0 w-64 sm:w-72 lg:w-80 aspect-video group cursor-pointer"
           >
             {/* Autoplay muted video */}
             <video
@@ -54,7 +54,7 @@ function FishShowcaseSection() {
               loop
               playsInline
               preload="none"
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+              className="w-full h-full object-contain"
             />
             {/* Gradient overlay */}
             <div className={`absolute inset-0 bg-gradient-to-t ${fish.color} via-transparent to-transparent`} />
