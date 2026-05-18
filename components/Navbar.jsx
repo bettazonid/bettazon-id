@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -14,19 +14,31 @@ const navLinks = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled
+        ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
+        : 'bg-transparent border-b border-transparent'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/assets/images/logo.png"
+              src={scrolled ? '/assets/images/logo.png' : '/assets/images/logo-white.png'}
               alt="Bettazon.id"
               width={140}
               height={36}
-              className="h-9 w-auto object-contain"
+              className="h-9 w-auto object-contain transition-opacity duration-200"
               priority
             />
           </Link>
@@ -40,8 +52,12 @@ export default function Navbar() {
                   href={href}
                   className={`transition-colors font-medium text-sm ${
                     label === 'Jadi Seller'
-                      ? 'text-[#008080] hover:text-[#006666] font-semibold'
-                      : 'text-gray-600 hover:text-[#FE735C]'
+                      ? scrolled
+                        ? 'text-[#008080] hover:text-[#006666] font-semibold'
+                        : 'text-teal-300 hover:text-teal-200 font-semibold'
+                      : scrolled
+                        ? 'text-gray-600 hover:text-[#FE735C]'
+                        : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {label}
@@ -50,7 +66,11 @@ export default function Navbar() {
                 <a
                   key={label}
                   href={href}
-                  className="text-gray-600 hover:text-[#FE735C] transition-colors font-medium text-sm"
+                  className={`transition-colors font-medium text-sm ${
+                    scrolled
+                      ? 'text-gray-600 hover:text-[#FE735C]'
+                      : 'text-white/80 hover:text-white'
+                  }`}
                 >
                   {label}
                 </a>
@@ -72,7 +92,9 @@ export default function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            className={`md:hidden p-2 rounded-lg transition-colors ${
+              scrolled ? 'text-gray-600 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+            }`}
             aria-label="Toggle menu"
           >
             {isOpen ? (

@@ -1,95 +1,83 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import HeroVideo from '@/components/HeroVideo'
 import Link from 'next/link'
 
 const IS_CLOSED_TESTING = false
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=id.bettazon.app'
 
-// ─── HERO ────────────────────────────────────────────────────────────────────
-function HeroSection() {
+// ─── FISH VIDEO SHOWCASE ──────────────────────────────────────────────────────
+const fishVideos = [
+  { src: '/assets/video/betta.mp4', name: 'Betta', desc: 'Cupang Halfmoon', color: 'from-blue-900/80' },
+  { src: '/assets/video/koi.mp4', name: 'Koi', desc: 'Koi Premium Jepang', color: 'from-red-900/80' },
+  { src: '/assets/video/arwana.mp4', name: 'Arwana', desc: 'Super Red Arwana', color: 'from-yellow-900/80' },
+  { src: '/assets/video/guppy.mp4', name: 'Guppy', desc: 'Guppy Fancy', color: 'from-purple-900/80' },
+  { src: '/assets/video/golden-fish.mp4', name: 'Mas Koki', desc: 'Goldfish Fancy', color: 'from-amber-900/80' },
+]
+
+function FishShowcaseSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-orange-50 min-h-screen flex items-center pt-16">
-      {/* Decorative blobs */}
-      <div className="absolute top-20 -left-24 w-96 h-96 bg-[#FE735C]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 -right-24 w-96 h-96 bg-[#008080]/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 w-full">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-[#FE735C]/10 border border-[#FE735C]/20 text-[#FE735C] px-4 py-2 rounded-full text-sm font-semibold mb-8">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
-            Marketplace Ikan Hias #1 di Indonesia
+    <section className="py-16 sm:py-20 bg-gray-950 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-[#FE735C]/15 text-[#FE735C] px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+              🐠 Koleksi Ikan Hias
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight">
+              Ribuan Pilihan
+              <br />
+              <span className="bg-gradient-to-r from-teal-400 to-[#FE735C] bg-clip-text text-transparent">
+                Ikan Hias Premium
+              </span>
+            </h2>
           </div>
-
-          {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
-            Jual & Beli{' '}
-            <span className="text-[#FE735C]">Ikan Hias</span>
-            <br />
-            <span className="text-[#008080]">Kapan Saja</span>
-            {', '}
-            Dimana Saja
-          </h1>
-
-          {/* Description */}
-          <p className="text-xl text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Temukan ribuan jenis ikan hias dari penjual terpercaya — atau{' '}
-            <strong>buka tokomu sendiri</strong> dan jangkau pembeli di seluruh Indonesia.
-            Lelang live, streaming langsung, pengiriman aman, dan ekspor ke mancanegara.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <a
-              href="#unduh"
-              className="inline-flex items-center gap-3 bg-[#FE735C] hover:bg-[#e5634d] text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all hover:shadow-2xl hover:shadow-[#FE735C]/30 hover:-translate-y-0.5"
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
-              </svg>
-              {IS_CLOSED_TESTING ? '🚧 Segera Hadir di Play Store' : 'Download di Play Store'}
-            </a>
-            <Link
-              href="/seller"
-              className="inline-flex items-center gap-2 text-[#008080] hover:text-[#006666] font-semibold text-lg transition-colors group"
-            >
-              Mulai Berjualan →
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            {[
-              { number: 'Baru!', label: 'Platform Diluncurkan', href: null },
-              { number: '0%', label: 'Fee Founding Seller', href: '/seller' },
-              { number: 'Gratis', label: 'Daftar & Mulai Jualan', href: '/seller' },
-              { number: 'Escrow', label: 'Setiap Transaksi Aman', href: null },
-            ].map(({ number, label, href }) => {
-              const content = (
-                <>
-                  <div className="text-2xl sm:text-3xl font-bold text-[#FE735C]">{number}</div>
-                  <div className="text-xs sm:text-sm text-gray-500 mt-1">{label}</div>
-                </>
-              )
-              return href ? (
-                <Link
-                  key={label}
-                  href={href}
-                  className="bg-white/80 backdrop-blur rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-[#008080]/40 hover:shadow-md transition-all"
-                >
-                  {content}
-                </Link>
-              ) : (
-                <div
-                  key={label}
-                  className="bg-white/80 backdrop-blur rounded-2xl p-4 shadow-sm border border-gray-100"
-                >
-                  {content}
-                </div>
-              )
-            })}
-          </div>
+          <a href="#unduh" className="hidden sm:inline-flex items-center gap-1.5 text-teal-400 hover:text-teal-300 font-semibold text-sm transition-colors shrink-0 mb-1">
+            Lihat semua
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
+      </div>
+
+      {/* Horizontal scrollable video cards */}
+      <div className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto pb-4 max-w-7xl mx-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {fishVideos.map((fish) => (
+          <div
+            key={fish.name}
+            className="relative rounded-2xl overflow-hidden shrink-0 w-44 sm:w-52 lg:w-56 aspect-[3/4] group cursor-pointer"
+          >
+            {/* Autoplay muted video */}
+            <video
+              src={fish.src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            />
+            {/* Gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-t ${fish.color} via-transparent to-transparent`} />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-gray-950/10 to-transparent" />
+            {/* Info */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <div className="text-white font-black text-xl leading-tight">{fish.name}</div>
+              <div className="text-gray-400 text-xs mt-1">{fish.desc}</div>
+            </div>
+            {/* Playing badge */}
+            <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FE735C] animate-pulse" />
+              <span className="text-white text-xs font-medium">HD</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile CTA */}
+      <div className="flex justify-center mt-6 sm:hidden px-4">
+        <a href="#unduh" className="text-teal-400 font-semibold text-sm">
+          Lihat semua jenis ikan →
+        </a>
       </div>
     </section>
   )
@@ -432,19 +420,33 @@ function LiveHighlightSection() {
             </p>
           </div>
 
-          {/* Mock stream UI */}
-          <div className="bg-gray-800/60 backdrop-blur rounded-3xl p-6 border border-gray-700">
-            {/* Stream preview */}
-            <div className="bg-gray-900 rounded-2xl aspect-video flex items-center justify-center mb-4 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-900/50 to-gray-900/80" />
-              <div className="relative text-center">
-                <div className="text-6xl mb-3">🐠</div>
-                <div className="text-white font-semibold">Live Stream Preview</div>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                  <span className="text-red-400 text-sm font-medium">LIVE</span>
-                  <span className="text-gray-400 text-sm">• 247 penonton</span>
-                </div>
+          {/* Live stream card */}
+          <div className="bg-gray-800/60 backdrop-blur-md rounded-3xl p-5 border border-gray-700 shadow-2xl shadow-black/40">
+            {/* Real video stream preview */}
+            <div className="relative rounded-2xl overflow-hidden aspect-video mb-4">
+              <video
+                src="/assets/video/betta.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+              {/* Cinematic overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-gray-900/20" />
+              {/* LIVE badge */}
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <span className="text-white text-xs font-bold">LIVE</span>
+              </div>
+              {/* Viewer count */}
+              <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                <span className="text-gray-200 text-xs">👁 247</span>
+              </div>
+              {/* Stream title */}
+              <div className="absolute bottom-3 left-3">
+                <div className="text-white font-bold text-sm drop-shadow">Betta Halfmoon Premium</div>
+                <div className="text-gray-300 text-xs">by @farm_betta_solo</div>
               </div>
             </div>
 
@@ -454,13 +456,13 @@ function LiveHighlightSection() {
                 <span className="text-gray-400 text-sm">🔨 Lelang Aktif</span>
                 <span className="text-[#FE735C] font-bold text-sm">⏱ 02:47</span>
               </div>
-              <div className="text-white font-bold text-lg">Betta Halfmoon Premium</div>
+              <div className="text-white font-bold">Betta Halfmoon Premium Grade A</div>
               <div className="flex items-center justify-between mt-2">
                 <div>
                   <span className="text-gray-400 text-xs">Penawaran tertinggi</span>
                   <div className="text-[#FE735C] font-bold text-xl">Rp 850.000</div>
                 </div>
-                <button className="bg-[#FE735C] text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                <button className="bg-[#FE735C] hover:bg-[#e5634d] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                   Tawar
                 </button>
               </div>
@@ -474,7 +476,7 @@ function LiveHighlightSection() {
                 { user: 'budi_koi', msg: 'Ikan sehat ga?' },
               ].map(({ user, msg }) => (
                 <div key={user} className="flex gap-2 text-xs">
-                  <span className="text-[#FE735C] font-semibold">{user}:</span>
+                  <span className="text-[#FE735C] font-semibold shrink-0">{user}:</span>
                   <span className="text-gray-300">{msg}</span>
                 </div>
               ))}
@@ -899,7 +901,8 @@ export default function HomePage() {
     <>
       <Navbar />
       <main>
-        <HeroSection />
+        <HeroVideo />
+        <FishShowcaseSection />
         <FeaturesSection />
         <HowItWorksSection />
         <LiveHighlightSection />
