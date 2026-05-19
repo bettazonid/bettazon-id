@@ -344,7 +344,7 @@ function HowItWorksSection() {
               )}
 
               {/* Icon box */}
-              <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#FE735C] to-[#e5634d] text-white rounded-2xl shadow-lg shadow-[#FE735C]/30 mb-5">
+              <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#FE735C] to-[#100300] text-white rounded-2xl shadow-lg shadow-[#FE735C]/30 mb-5">
                 <StepIcon id={step.iconId} />
                 <span className="absolute -top-2 -right-2 w-6 h-6 bg-white border-2 border-[#FE735C] rounded-full text-[#FE735C] text-xs font-bold flex items-center justify-center">
                   {step.step}
@@ -400,7 +400,7 @@ function LiveHighlightSection() {
 
             <a
               href="#unduh"
-              className="inline-flex items-center gap-2 mt-8 bg-[#FE735C] hover:bg-[#e5634d] text-white px-7 py-3.5 rounded-xl font-bold transition-all hover:shadow-xl hover:shadow-[#FE735C]/30"
+              className="inline-flex items-center gap-2 mt-8 bg-[#FE735C] hover:bg-[#100300] text-white px-7 py-3.5 rounded-xl font-bold transition-all hover:shadow-xl hover:shadow-[#FE735C]/30"
             >
               Coba Sekarang — Gratis
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -462,7 +462,7 @@ function LiveHighlightSection() {
                   <span className="text-gray-400 text-xs">Penawaran tertinggi</span>
                   <div className="text-[#FE735C] font-bold text-xl">Rp 850.000</div>
                 </div>
-                <button className="bg-[#FE735C] hover:bg-[#e5634d] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                <button className="bg-[#FE735C] hover:bg-[#100300] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                   Tawar
                 </button>
               </div>
@@ -668,7 +668,7 @@ function FoundingSellerSection() {
   return (
     <section className="py-16 sm:py-20 bg-gradient-to-br from-[#FE735C]/5 via-white to-[#008080]/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#e5634d] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#100300] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
           {/* Decorative circles */}
           <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2" />

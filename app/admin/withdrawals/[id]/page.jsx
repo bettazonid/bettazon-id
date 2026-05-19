@@ -198,7 +198,7 @@ export default function AdminWithdrawalDetailPage() {
               <button
                 disabled={!isPending || submitting}
                 onClick={() => handleApprove(true)}
-                className="rounded-lg bg-[#FE735C] hover:bg-[#e5634d] disabled:opacity-50 text-white px-3 py-2 text-sm"
+                className="rounded-lg bg-[#FE735C] hover:bg-[#100300] disabled:opacity-50 text-white px-3 py-2 text-sm"
               >
                 Manual Approve
               </button>

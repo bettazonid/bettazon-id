@@ -58,7 +58,7 @@ function SellerHero() {
             </a>
             <a
               href="#cara-berjualan"
-              className="inline-flex items-center gap-2 text-[#FE735C] hover:text-[#e5634d] font-semibold text-lg transition-colors group"
+              className="inline-flex items-center gap-2 text-[#FE735C] hover:text-[#100300] font-semibold text-lg transition-colors group"
             >
               Lihat Cara Kerjanya
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,7 +324,7 @@ function FoundingSellerSection() {
   return (
     <section id="founding-seller" className="py-16 sm:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#e5634d] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#100300] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
           <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2" />
           <div className="relative">

@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[#FE735C] hover:bg-[#e5634d] disabled:opacity-60 text-white font-semibold px-4 py-2"
+            className="w-full rounded-lg bg-[#FE735C] hover:bg-[#100300] disabled:opacity-60 text-white font-semibold px-4 py-2"
           >
             {loading ? 'Memproses...' : 'Masuk Admin'}
           </button>

@@ -822,7 +822,7 @@ export default function AdminChatsPage() {
                   <button
                     type="submit"
                     disabled={sendingMessage || !draftMessage.trim()}
-                    className="self-end rounded-xl bg-[#FE735C] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e5634d] disabled:opacity-50"
+                    className="self-end rounded-xl bg-[#FE735C] px-4 py-2 text-sm font-semibold text-white hover:bg-[#100300] disabled:opacity-50"
                   >
                     {sendingMessage ? 'Mengirim...' : 'Kirim'}
                   </button>

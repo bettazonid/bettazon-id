@@ -107,7 +107,7 @@ export default function HeroVideo() {
               href={IS_CLOSED_TESTING ? '#unduh' : PLAY_STORE_URL}
               target={IS_CLOSED_TESTING ? undefined : '_blank'}
               rel={IS_CLOSED_TESTING ? undefined : 'noopener noreferrer'}
-              className="inline-flex items-center gap-3 bg-[#FE735C] hover:bg-[#e5634d] text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all hover:shadow-2xl hover:shadow-[#FE735C]/40 hover:-translate-y-0.5 active:translate-y-0"
+              className="inline-flex items-center gap-3 bg-[#FE735C] hover:bg-[#100300] text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all hover:shadow-2xl hover:shadow-[#FE735C]/40 hover:-translate-y-0.5 active:translate-y-0"
             >
               <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3.18 23.76c.29.16.64.19.96.09l11.84-6.52-2.59-2.59-10.21 9.02zM.19 1.73C.07 2.01 0 2.33 0 2.68v18.64c0 .35.07.67.19.95l.1.09 10.45-10.45v-.25L.29 1.64l-.1.09zM19.37 10.43l-2.89-1.59-2.91 2.91 2.91 2.91 2.9-1.6c.83-.46.83-1.21-.01-1.63zM4.14.24L16 6.76l-2.59 2.59L3.18.24A.87.87 0 014.14.24z" />
