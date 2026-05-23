@@ -58,7 +58,7 @@ function SellerHero() {
             </a>
             <a
               href="#cara-berjualan"
-              className="inline-flex items-center gap-2 text-[#FE735C] hover:text-[#100300] font-semibold text-lg transition-colors group"
+              className="inline-flex items-center gap-2 text-[#FE735C] hover:text-[#e5634d] font-semibold text-lg transition-colors group"
             >
               Lihat Cara Kerjanya
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,7 +324,7 @@ function FoundingSellerSection() {
   return (
     <section id="founding-seller" className="py-16 sm:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#100300] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FE735C] to-[#e5634d] p-10 sm:p-16 text-white text-center shadow-2xl shadow-[#FE735C]/20">
           <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2" />
           <div className="relative">
@@ -449,62 +449,6 @@ function SellerFAQSection() {
   )
 }
 
-// ─── SELLER CENTER SECTION ────────────────────────────────────────────────────
-function SellerCenterSection() {
-  const guides = [
-    { href: '/seller-center/mulai-berjualan', icon: '🚀', title: 'Mulai Berjualan', desc: 'Daftar, verifikasi KTP, dan buka toko dalam 30 menit.' },
-    { href: '/seller-center/pesanan', icon: '🛒', title: 'Kelola Pesanan', desc: 'Konfirmasi, packing aman, dan input resi dengan mudah.' },
-    { href: '/seller-center/live', icon: '🎥', title: 'Panduan Live', desc: 'Tips live ramai dan cara lelang ikan secara real-time.' },
-  ]
-
-  return (
-    <section className="py-20 sm:py-24 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-[#008080]/10 border border-[#008080]/20 text-[#008080] px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
-            📚 Seller Center
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
-            Semua Panduan Ada di Sini
-          </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
-            Tutorial lengkap, FAQ, dan tips berjualan — khusus untuk seller Bettazon.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {guides.map(({ href, icon, title, desc }) => (
-            <Link
-              key={href}
-              href={href}
-              className="group bg-gray-50 hover:bg-teal-50 border border-gray-100 hover:border-[#008080]/30 rounded-2xl p-5 transition-all"
-            >
-              <div className="text-3xl mb-3">{icon}</div>
-              <h3 className="font-bold text-gray-900 mb-1">{title}</h3>
-              <p className="text-gray-500 text-sm mb-3">{desc}</p>
-              <span className="text-[#008080] text-sm font-semibold group-hover:underline">
-                Baca panduan →
-              </span>
-            </Link>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Link
-            href="/seller-center"
-            className="inline-flex items-center gap-2 bg-[#008080] hover:bg-[#006666] text-white px-7 py-3.5 rounded-2xl font-bold transition-all hover:shadow-lg hover:shadow-[#008080]/25"
-          >
-            Lihat Semua Panduan
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ─── FINAL CTA ────────────────────────────────────────────────────────────────
 function SellerCTA() {
   return (
@@ -555,7 +499,6 @@ export default function SellerPage() {
         <KtpTrustSection />
         <FoundingSellerSection />
         <SellerFAQSection />
-        <SellerCenterSection />
         <SellerCTA />
       </main>
       <Footer />
