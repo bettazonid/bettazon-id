@@ -3,6 +3,35 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { adminFetch } from '@/lib/adminApi'
 
+/**
+ * Parse filename like "denys_brodovskyi-tell-me-the-truth-260010.mp3"
+ * → artist: "Denys Brodovskyi"
+ * → title:  "Tell Me The Truth"
+ */
+function parseFilename(filename) {
+  const base = filename.replace(/\.[^.]+$/, '') // strip extension
+  const parts = base.split('-')
+  // Strip trailing pure-number segment (track ID from Pixabay etc.)
+  const last = parts[parts.length - 1]
+  const relevant = /^\d+$/.test(last) ? parts.slice(0, -1) : parts
+  const toTitle = (str) =>
+    str.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim()
+  const artist = toTitle(relevant[0] ?? '')
+  const title = toTitle(relevant.slice(1).join(' ')) || artist
+  return { artist, title }
+}
+
+/** Read audio duration from a File using browser Audio API */
+function readAudioDuration(file) {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file)
+    const audio = new Audio()
+    audio.addEventListener('loadedmetadata', () => { URL.revokeObjectURL(url); resolve(isFinite(audio.duration) ? Math.round(audio.duration) : 0) })
+    audio.addEventListener('error', () => { URL.revokeObjectURL(url); resolve(0) })
+    audio.src = url
+  })
+}
+
 const CATEGORY_LABELS = {
   ambient: 'Ambient',
   upbeat: 'Upbeat',
@@ -19,7 +48,7 @@ function formatDuration(sec) {
 }
 
 // ── Track Row ─────────────────────────────────────────────────────────────────
-function TrackRow({ track, onToggle, onDelete, onPlay }) {
+function TrackRow({ track, onToggle, onDelete, onPlay, isPlaying }) {
   return (
     <tr className="hover:bg-gray-50 transition-colors">
       <td className="px-4 py-3">
@@ -54,10 +83,10 @@ function TrackRow({ track, onToggle, onDelete, onPlay }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => onPlay(track.fileUrl)}
-            className="text-[#008080] hover:text-[#006666] text-sm font-medium"
-            title="Preview"
+            className={`text-sm font-medium transition-colors ${isPlaying ? 'text-red-500 hover:text-red-700' : 'text-[#008080] hover:text-[#006666]'}`}
+            title={isPlaying ? 'Stop' : 'Preview'}
           >
-            ▶
+            {isPlaying ? '■' : '▶'}
           </button>
           <button
             onClick={() => onDelete(track._id, track.title)}
@@ -82,6 +111,21 @@ function UploadModal({ onClose, onSuccess }) {
   const [coverFile, setCoverFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  async function handleAudioChange(e) {
+    const file = e.target.files?.[0] || null
+    setAudioFile(file)
+    if (file) {
+      const parsed = parseFilename(file.name)
+      const dur = await readAudioDuration(file)
+      setForm(f => ({
+        ...f,
+        title: f.title || parsed.title,
+        artist: f.artist || parsed.artist,
+        durationSec: dur || f.durationSec,
+      }))
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -188,7 +232,7 @@ function UploadModal({ onClose, onSuccess }) {
             <label className="block text-xs font-medium text-gray-700 mb-1">File Audio * (MP3/OGG, maks 20MB)</label>
             <input
               type="file" accept="audio/*"
-              onChange={e => setAudioFile(e.target.files?.[0] || null)}
+              onChange={handleAudioChange}
               className="block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#008080]/10 file:text-[#008080] hover:file:bg-[#008080]/20 cursor-pointer"
             />
           </div>
@@ -220,12 +264,229 @@ function UploadModal({ onClose, onSuccess }) {
   )
 }
 
+// ── Bulk Upload Modal ─────────────────────────────────────────────────────────
+const STATUS_ICON = { pending: '⏳', uploading: '⬆️', done: '✅', error: '❌' }
+
+function BulkUploadModal({ onClose, onSuccess }) {
+  const [items, setItems] = useState([])
+  const [sharedCategory, setSharedCategory] = useState('ambient')
+  const [sharedLicense, setSharedLicense] = useState('CC0')
+  const [sharedLicenseSource, setSharedLicenseSource] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [done, setDone] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+
+  async function addFiles(files) {
+    const audioFiles = Array.from(files).filter(
+      f => f.type.startsWith('audio/') || /\.(mp3|ogg|flac|wav|m4a)$/i.test(f.name)
+    )
+    if (!audioFiles.length) return
+    const newItems = await Promise.all(audioFiles.map(async (file) => {
+      const parsed = parseFilename(file.name)
+      const durationSec = await readAudioDuration(file)
+      return { file, title: parsed.title, artist: parsed.artist, durationSec, status: 'pending', error: null }
+    }))
+    setItems(prev => [...prev, ...newItems])
+  }
+
+  function handleFileInput(e) { addFiles(e.target.files) }
+  function handleDrop(e) { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files) }
+  function handleDragOver(e) { e.preventDefault(); setDragOver(true) }
+  function handleDragLeave() { setDragOver(false) }
+  function removeItem(idx) { setItems(prev => prev.filter((_, i) => i !== idx)) }
+  function updateItem(idx, field, value) {
+    setItems(prev => prev.map((it, i) => i === idx ? { ...it, [field]: value } : it))
+  }
+
+  async function handleUploadAll() {
+    if (!items.length) return
+    setUploading(true)
+    const token = localStorage.getItem('admin_token')
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'
+    let successCount = 0
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].status === 'done') continue
+      setItems(prev => prev.map((it, idx) => idx === i ? { ...it, status: 'uploading', error: null } : it))
+      try {
+        const fd = new FormData()
+        fd.append('audio', items[i].file)
+        fd.append('title', items[i].title || items[i].file.name)
+        fd.append('artist', items[i].artist || '')
+        fd.append('category', sharedCategory)
+        fd.append('durationSec', String(items[i].durationSec || 0))
+        fd.append('licenseType', sharedLicense)
+        fd.append('licenseSource', sharedLicenseSource)
+        fd.append('order', '0')
+        fd.append('isEnabled', 'true')
+        const res = await fetch(`${base}/api/music/admin`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd,
+        })
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          throw new Error(data?.message?.id || data?.message?.en || `HTTP ${res.status}`)
+        }
+        const data = await res.json()
+        onSuccess(data.data)
+        successCount++
+        setItems(prev => prev.map((it, idx) => idx === i ? { ...it, status: 'done' } : it))
+      } catch (err) {
+        setItems(prev => prev.map((it, idx) => idx === i ? { ...it, status: 'error', error: err.message } : it))
+      }
+    }
+    setUploading(false)
+    setDone(true)
+  }
+
+  const doneCount = items.filter(i => i.status === 'done').length
+  const errorCount = items.filter(i => i.status === 'error').length
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh]">
+        {/* Header */}
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h2 className="font-bold text-gray-900 text-lg">📦 Upload Massal Musik</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Pilih banyak file sekaligus · judul &amp; artis otomatis dari nama file</p>
+          </div>
+          <button onClick={onClose} disabled={uploading} className="text-gray-400 hover:text-gray-600 text-xl disabled:opacity-40">✕</button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {/* Drop zone */}
+          <div className="px-5 pt-4">
+            <label
+              onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}
+              className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${
+                dragOver ? 'border-[#008080] bg-[#008080]/5' : 'border-gray-200 hover:border-[#008080]/50 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-3xl mb-1">🎵</span>
+              <span className="text-sm text-gray-600 font-medium">Drag &amp; drop file audio di sini</span>
+              <span className="text-xs text-gray-400 mt-0.5">atau klik untuk pilih file (MP3, OGG, WAV, FLAC)</span>
+              <input type="file" accept="audio/*" multiple className="hidden" onChange={handleFileInput} disabled={uploading} />
+            </label>
+          </div>
+
+          {/* Shared settings */}
+          <div className="px-5 pt-4 pb-2">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Pengaturan untuk semua track</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
+                <select value={sharedCategory} onChange={e => setSharedCategory(e.target.value)} disabled={uploading}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30 disabled:opacity-50">
+                  {Object.entries(CATEGORY_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Lisensi</label>
+                <select value={sharedLicense} onChange={e => setSharedLicense(e.target.value)} disabled={uploading}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30 disabled:opacity-50">
+                  <option value="CC0">CC0</option>
+                  <option value="CC-BY">CC-BY</option>
+                  <option value="royalty-free">Royalty-Free</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Sumber Lisensi</label>
+                <input value={sharedLicenseSource} onChange={e => setSharedLicenseSource(e.target.value)} disabled={uploading}
+                  placeholder="e.g. pixabay.com/music"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30 disabled:opacity-50" />
+              </div>
+            </div>
+          </div>
+
+          {/* File list */}
+          {items.length > 0 && (
+            <div className="px-5 pb-4">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">{items.length} file dipilih</p>
+              <div className="space-y-2">
+                {items.map((item, idx) => (
+                  <div key={idx} className={`rounded-xl border px-3 py-2.5 ${
+                    item.status === 'done' ? 'border-green-200 bg-green-50' :
+                    item.status === 'error' ? 'border-red-200 bg-red-50' :
+                    item.status === 'uploading' ? 'border-[#008080]/30 bg-[#008080]/5' :
+                    'border-gray-200 bg-white'
+                  }`}>
+                    <div className="flex items-start gap-2">
+                      <span className="text-base mt-0.5 shrink-0">{STATUS_ICON[item.status]}</span>
+                      <div className="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                        <div>
+                          <label className="block text-[10px] font-medium text-gray-500 mb-0.5">Judul</label>
+                          <input value={item.title} onChange={e => updateItem(idx, 'title', e.target.value)}
+                            disabled={uploading}
+                            className="w-full border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#008080]/40 disabled:opacity-60 bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-medium text-gray-500 mb-0.5">Artis</label>
+                          <input value={item.artist} onChange={e => updateItem(idx, 'artist', e.target.value)}
+                            disabled={uploading}
+                            className="w-full border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#008080]/40 disabled:opacity-60 bg-white" />
+                        </div>
+                        <div className="col-span-2 flex items-center gap-4">
+                          <span className="text-[10px] text-gray-400">
+                            📁 {item.file.name} · {(item.file.size / 1024 / 1024).toFixed(1)} MB
+                            {item.durationSec ? ` · ${formatDuration(item.durationSec)}` : ''}
+                          </span>
+                          {item.error && <span className="text-[10px] text-red-600">⚠ {item.error}</span>}
+                        </div>
+                      </div>
+                      {!uploading && item.status !== 'done' && (
+                        <button onClick={() => removeItem(idx)} className="text-gray-300 hover:text-red-400 text-sm shrink-0 mt-0.5">✕</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+          <div className="text-sm">
+            {uploading && <span className="text-[#008080]">Mengupload {doneCount + 1} dari {items.length}…</span>}
+            {done && (
+              <span>
+                {doneCount > 0 && <span className="text-green-600 font-medium">{doneCount} berhasil</span>}
+                {errorCount > 0 && <span className="text-red-500 font-medium ml-2">{errorCount} gagal</span>}
+              </span>
+            )}
+          </div>
+          <div className="flex gap-3">
+            <button onClick={onClose} disabled={uploading}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40">
+              {done ? 'Tutup' : 'Batal'}
+            </button>
+            {!done && (
+              <button onClick={handleUploadAll} disabled={uploading || items.length === 0}
+                className="px-4 py-2 rounded-lg bg-[#008080] text-white text-sm font-medium hover:bg-[#006666] disabled:opacity-50 min-w-[130px]">
+                {uploading ? `Upload ${doneCount + 1}/${items.length}…` : `Upload ${items.length > 0 ? items.length + ' Track' : 'Semua'}`}
+              </button>
+            )}
+            {done && errorCount > 0 && (
+              <button onClick={handleUploadAll} disabled={uploading}
+                className="px-4 py-2 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600">
+                Coba Ulang Gagal
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function MusicCatalogPage() {
   const [tracks, setTracks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showUpload, setShowUpload] = useState(false)
+  const [showBulk, setShowBulk] = useState(false)
   const [playingUrl, setPlayingUrl] = useState(null)
   const audioRef = useRef(null)
 
@@ -281,7 +542,10 @@ export default function MusicCatalogPage() {
   }
 
   function handleUploadSuccess(newTrack) {
-    setTracks(prev => [newTrack, ...prev])
+    setTracks(prev => {
+      if (prev.some(t => t._id === newTrack._id)) return prev
+      return [newTrack, ...prev]
+    })
   }
 
   const enabledCount = tracks.filter(t => t.isEnabled).length
@@ -296,15 +560,23 @@ export default function MusicCatalogPage() {
         <div>
           <h1 className="text-xl font-bold text-gray-900">🎵 Katalog Musik Ambience</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            Musik royalty-free untuk live streaming seller · {enabledCount} track aktif
+            Musik royalty-free untuk live streaming seller · {enabledCount} track aktif dari {tracks.length}
           </p>
         </div>
-        <button
-          onClick={() => setShowUpload(true)}
-          className="px-4 py-2 bg-[#008080] text-white rounded-lg text-sm font-medium hover:bg-[#006666] transition-colors"
-        >
-          + Upload Track
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowBulk(true)}
+            className="px-4 py-2 bg-[#008080]/10 text-[#008080] border border-[#008080]/30 rounded-lg text-sm font-medium hover:bg-[#008080]/20 transition-colors"
+          >
+            📦 Upload Massal
+          </button>
+          <button
+            onClick={() => setShowUpload(true)}
+            className="px-4 py-2 bg-[#008080] text-white rounded-lg text-sm font-medium hover:bg-[#006666] transition-colors"
+          >
+            + Upload 1 Track
+          </button>
+        </div>
       </div>
 
       {/* Error */}
@@ -348,6 +620,7 @@ export default function MusicCatalogPage() {
                     onToggle={handleToggle}
                     onDelete={handleDelete}
                     onPlay={handlePlay}
+                    isPlaying={playingUrl === track.fileUrl}
                   />
                 ))}
               </tbody>
@@ -359,6 +632,12 @@ export default function MusicCatalogPage() {
       {showUpload && (
         <UploadModal
           onClose={() => setShowUpload(false)}
+          onSuccess={handleUploadSuccess}
+        />
+      )}
+      {showBulk && (
+        <BulkUploadModal
+          onClose={() => setShowBulk(false)}
           onSuccess={handleUploadSuccess}
         />
       )}
