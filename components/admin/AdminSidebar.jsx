@@ -15,6 +15,7 @@ const menus = [
   { href: '/admin/products', label: 'Produk' },
   { href: '/admin/orders', label: 'Pesanan' },
   { href: '/admin/seller-verification', label: '🪪 Verifikasi KTP Seller' },
+  { href: '/admin/music', label: '🎵 Musik Ambience Live' },
   { href: '/admin/emails', label: 'Inbox Email' },
   { href: '/admin/emails/sent', label: 'Sent/Outbox' },
   { href: '/admin/users', label: 'Pengguna' },
