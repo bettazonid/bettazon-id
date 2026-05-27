@@ -119,6 +119,19 @@ export default function AdminShippingCouriersPage() {
     }
   };
 
+  const toggleShipmentVerification = async (id, name) => {
+    try {
+      const res = await adminFetch(`/api/shipping/admin/couriers/${id}/shipment-verification`, { method: 'PATCH' });
+      const msg = res.message?.id || res.message?.en || '';
+      loadCouriers();
+      // brief toast-style feedback
+      setSyncResult({ message: { id: msg } });
+      setTimeout(() => setSyncResult(null), 3000);
+    } catch (e) {
+      alert('Gagal toggle QR Verification: ' + (e.message || e));
+    }
+  };
+
   const createCourier = async () => {
     if (!newCourier.name.trim() || !newCourier.code.trim()) {
       setCreateError('Nama dan kode kurir wajib diisi.');
@@ -306,6 +319,22 @@ export default function AdminShippingCouriersPage() {
                     <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${c.isActive ? 'translate-x-5' : ''}`} />
                   </div>
                 </label>
+                {/* QR Shipment Verification toggle */}
+                <div className="flex items-center gap-1.5 border-l pl-3 ml-1">
+                  <span className="text-xs text-gray-500 whitespace-nowrap">QR Verif</span>
+                  <div
+                    onClick={() => toggleShipmentVerification(c._id, c.name)}
+                    title={c.shipmentVerificationEnabled ? 'Nonaktifkan QR Verification' : 'Aktifkan QR Verification (akun nasional sudah aktif)'}
+                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                      c.shipmentVerificationEnabled ? 'bg-orange-500' : 'bg-gray-200'
+                    }`}
+                  >
+                    <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                      c.shipmentVerificationEnabled ? 'translate-x-5' : ''
+                    }`} />
+                  </div>
+                  {c.shipmentVerificationEnabled && <span className="text-xs">🏷️</span>}
+                </div>
                 <button
                   onClick={() => setExpandedId(expandedId === c._id ? null : c._id)}
                   className="text-sm text-teal-600 hover:underline ml-2"
