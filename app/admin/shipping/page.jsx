@@ -3,6 +3,13 @@ import Link from 'next/link';
 
 const sections = [
   {
+    href: '/admin/shipments',
+    title: 'Shipment Authorization (JNE)',
+    desc: 'Kelola label otorisasi pengiriman Bettazon × JNE. Lihat riwayat token, status penggunaan, dan batalkan authorization.',
+    icon: '🏷️',
+    badge: 'Baru',
+  },
+  {
     href: '/admin/shipping/couriers',
     title: 'Manajemen Kurir',
     desc: 'Aktifkan / nonaktifkan kurir dan kelola jenis layanan (YES, REG, OKE, dll).',
