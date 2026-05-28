@@ -14,14 +14,21 @@ const CRON_DESCRIPTION = {
   refreshCurrencyRates: 'Refresh kurs mata uang (08:00 & 20:00 WIB)',
 }
 
-function Badge({ active }) {
+function Badge({ scheduled, running }) {
+  if (running) {
+    return (
+      <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-blue-100 text-blue-700 animate-pulse">
+        Sedang berjalan
+      </span>
+    )
+  }
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-        active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700'
+        scheduled ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700'
       }`}
     >
-      {active ? 'Aktif' : 'Tidak aktif'}
+      {scheduled ? 'Terjadwal' : 'Tidak aktif'}
     </span>
   )
 }
@@ -42,6 +49,7 @@ export default function AdminCronJobsPage() {
   const [triggeringJob, setTriggeringJob] = useState('')
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
+  const [serverStartedAt, setServerStartedAt] = useState(null)
 
   const fetchJobs = useCallback(async ({ silent = false } = {}) => {
     try {
@@ -52,6 +60,7 @@ export default function AdminCronJobsPage() {
       const res = await adminFetch('/api/admin/cron-jobs')
       const list = res?.data?.jobs || []
       setJobs(list)
+      if (res?.data?.serverStartedAt) setServerStartedAt(res.data.serverStartedAt)
 
       if (silent) {
         setInfo(`Status cron jobs diperbarui (${new Date().toLocaleTimeString('id-ID')}).`)
@@ -71,7 +80,7 @@ export default function AdminCronJobsPage() {
 
   const stats = useMemo(() => {
     const total = jobs.length
-    const active = jobs.filter((j) => Boolean(j.isRunning)).length
+    const active = jobs.filter((j) => Boolean(j.isScheduled)).length
     const inactive = total - active
     return { total, active, inactive }
   }, [jobs])
@@ -120,9 +129,17 @@ export default function AdminCronJobsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <StatCard label="Total Job" value={stats.total} />
-        <StatCard label="Job Aktif" value={stats.active} color="text-emerald-600" />
+        <StatCard label="Job Terjadwal" value={stats.active} color="text-emerald-600" />
         <StatCard label="Job Tidak Aktif" value={stats.inactive} color="text-gray-600" />
       </div>
+
+      {serverStartedAt && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          <span className="font-semibold">ℹ️ Server berjalan sejak:</span>{' '}
+          {new Date(serverStartedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB
+          {' '}— Semua cron job aktif otomatis saat server hidup dan berhenti saat server restart/update.
+        </div>
+      )}
 
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         {error ? (
@@ -149,6 +166,7 @@ export default function AdminCronJobsPage() {
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Deskripsi</th>
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Schedule</th>
                   <th className="px-5 py-3 text-left font-semibold text-gray-700">Status</th>
+                  <th className="px-5 py-3 text-left font-semibold text-gray-700">Terakhir Dijalankan</th>
                   <th className="px-5 py-3 text-right font-semibold text-gray-700">Aksi</th>
                 </tr>
               </thead>
@@ -163,7 +181,17 @@ export default function AdminCronJobsPage() {
                     </td>
                     <td className="px-5 py-3.5 text-gray-600 font-mono text-xs">{job.schedule || '—'}</td>
                     <td className="px-5 py-3.5">
-                      <Badge active={Boolean(job.isRunning)} />
+                      <Badge scheduled={Boolean(job.isScheduled)} running={Boolean(job.isRunning)} />
+                    </td>
+                    <td className="px-5 py-3.5 text-gray-500 text-xs">
+                      {job.lastTriggeredAt
+                        ? new Date(job.lastTriggeredAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
+                        : <span className="text-gray-400">Belum dijalankan</span>}
+                      {job.lastResult && (
+                        <span className={`ml-1 ${job.lastResult.success ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {job.lastResult.success ? '✓' : '✗'}
+                        </span>
+                      )}
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <button

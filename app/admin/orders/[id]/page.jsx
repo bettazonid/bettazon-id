@@ -434,6 +434,18 @@ export default function AdminOrderDetailPage() {
               {canCancelByCS ? (
                 showCancelForm ? (
                   <div className="space-y-2">
+                    {order?.payment?.paymentStatus === 'paid' && !order?.payment?.releasedToSeller && (
+                      <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800 flex items-start gap-2">
+                        <span className="text-base leading-none mt-0.5">⚠️</span>
+                        <span>
+                          Buyer sudah membayar{' '}
+                          <strong>
+                            Rp {(order?.payment?.totalAmount || order?.payment?.productPrice || 0).toLocaleString('id-ID')}
+                          </strong>
+                          . Pembatalan ini akan otomatis mengembalikan dana ke wallet buyer.
+                        </span>
+                      </div>
+                    )}
                     <select
                       value={cancelReason}
                       onChange={(e) => setCancelReason(e.target.value)}
