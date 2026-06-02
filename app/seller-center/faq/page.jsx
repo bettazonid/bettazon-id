@@ -37,7 +37,7 @@ const faqs = [
     items: [
       {
         q: 'Berapa maksimal foto yang bisa diupload per produk?',
-        a: 'Maksimal 8 foto dan 1 video (maks. 30MB) per produk. Minimal 1 foto wajib diunggah sebelum produk bisa dipublikasi. Direkomendasikan upload beberapa foto dari berbagai sudut agar listing terlihat meyakinkan.',
+        a: 'Maksimal 8 foto dan 1 video (maks. 50MB) per produk. Minimal 1 foto wajib diunggah sebelum produk bisa dipublikasi. Direkomendasikan upload beberapa foto dari berbagai sudut agar listing terlihat meyakinkan.',
       },
       {
         q: 'Apakah semua jenis ikan bisa dijual di Bettazon?',

@@ -56,7 +56,7 @@ export default function KelolaProductPage() {
             { icon: '💡', tip: 'Foto di bawah cahaya natural atau lampu akuarium yang terang. Hindari flash langsung.' },
             { icon: '🧹', tip: 'Pastikan kaca bersih, latar belakang polos atau simpel (hitam/putih paling bagus).' },
             { icon: '📐', tip: 'Gunakan format square (1:1) atau portrait (4:5). Resolusi minimal 800×800 px.' },
-            { icon: '🎥', tip: 'Tambahkan video pendek (max 30MB) untuk menunjukkan pergerakan ikan — meningkatkan minat beli.' },
+            { icon: '🎥', tip: 'Tambahkan video pendek (max 50MB) untuk menunjukkan pergerakan ikan — meningkatkan minat beli.' },
             { icon: '🚫', tip: 'Jangan pakai foto dari listing seller lain atau dari internet tanpa izin. Foto secara otomatis akan diwatermark "bettazon.id".' },
           ].map(({ icon, tip }) => (
             <div key={tip} className="flex gap-3 items-start bg-gray-50 rounded-xl p-3 text-sm text-gray-700">
