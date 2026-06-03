@@ -9,7 +9,7 @@ export const metadata = {
 export default function KelolaProductPage() {
   return (
     <SellerCenterLayout
-      icon="📦"
+      iconKey="kelola-produk"
       title="Kelola Produk"
       subtitle="Cara tambah, edit, dan optimalkan listing ikanmu agar cepat terjual."
       currentHref="/seller-center/kelola-produk"

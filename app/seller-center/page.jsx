@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import Footer from '@/components/Footer'
+import SellerCenterIcon from '@/components/seller-center/SellerCenterIcon'
 
 export const metadata = {
   title: 'Seller Center – Bettazon.id',
@@ -19,7 +20,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=id.bettazo
 const guides = [
   {
     href: '/seller-center/mulai-berjualan',
-    icon: '🚀',
+    iconKey: 'mulai-berjualan',
     title: 'Mulai Berjualan',
     desc: 'Cara daftar, verifikasi KTP, buka toko, dan upload produk pertamamu.',
     badge: 'Mulai di sini',
@@ -27,49 +28,49 @@ const guides = [
   },
   {
     href: '/seller-center/kelola-produk',
-    icon: '📦',
+    iconKey: 'kelola-produk',
     title: 'Kelola Produk',
     desc: 'Tambah, edit, dan atur produk, harga, stok, serta foto yang menarik pembeli.',
   },
   {
     href: '/seller-center/pesanan',
-    icon: '🛒',
+    iconKey: 'pesanan',
     title: 'Mengelola Pesanan',
     desc: 'Konfirmasi pesanan, packing aman, input resi, dan tangani retur atau sengketa.',
   },
   {
     href: '/seller-center/lelang',
-    icon: '🔨',
+    iconKey: 'lelang',
     title: 'Panduan Lelang',
     desc: 'Buat lelang halaman dan lelang live, aturan main, dan tips memenangkan pembeli.',
   },
   {
     href: '/seller-center/live',
-    icon: '🎥',
+    iconKey: 'live',
     title: 'Live Streaming',
     desc: 'Setup live, tampilkan ikan, terima bid langsung, dan tingkatkan penjualan real-time.',
   },
   {
     href: '/seller-center/pembayaran-pencairan',
-    icon: '💰',
+    iconKey: 'pembayaran',
     title: 'Pembayaran & Pencairan',
     desc: 'Alur escrow, jadwal pencairan, dan langkah tarik saldo ke rekening bank.',
   },
   {
     href: '/seller-center/ongkir-pengiriman',
-    icon: '🚢',
+    iconKey: 'ongkir',
     title: 'Ongkir & Pengiriman',
     desc: 'Kurir tersedia, pengemasan aman untuk ikan, dan pengiriman internasional.',
   },
   {
     href: '/seller-center/faq',
-    icon: '❓',
+    iconKey: 'faq',
     title: 'FAQ Seller',
     desc: 'Jawaban atas pertanyaan umum seputar komisi, suspend, pesanan, dan lainnya.',
   },
   {
     href: '/seller-center/kebijakan',
-    icon: '📋',
+    iconKey: 'kebijakan',
     title: 'Kebijakan Seller',
     desc: 'Aturan penting: produk terlarang, standar toko, dan konsekuensi pelanggaran.',
   },
@@ -122,14 +123,16 @@ export default function SellerCenterPage() {
         {/* Guide Cards */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {guides.map(({ href, icon, title, desc, badge, badgeColor }) => (
+            {guides.map(({ href, iconKey, title, desc, badge, badgeColor }) => (
               <Link
                 key={href}
                 href={href}
                 className="group bg-white rounded-2xl border border-gray-100 p-5 hover:border-[#008080]/30 hover:shadow-md transition-all"
               >
                 <div className="flex items-start gap-3">
-                  <div className="text-3xl mt-0.5">{icon}</div>
+                  <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center text-[#008080] mt-0.5">
+                    <SellerCenterIcon name={iconKey} className="w-6 h-6" />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <h2 className="font-bold text-gray-900 text-sm sm:text-base">{title}</h2>

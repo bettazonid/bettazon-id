@@ -42,7 +42,7 @@ const steps = [
 export default function MulaiBerjualanPage() {
   return (
     <SellerCenterLayout
-      icon="🚀"
+      iconKey="mulai-berjualan"
       title="Panduan Mulai Berjualan"
       subtitle="Dari download app sampai produk pertama tampil — selesai dalam 30 menit."
       currentHref="/seller-center/mulai-berjualan"

@@ -9,7 +9,7 @@ export const metadata = {
 export default function KebijakanPage() {
   return (
     <SellerCenterLayout
-      icon="📋"
+      iconKey="kebijakan"
       title="Kebijakan Seller"
       subtitle="Pahami aturan mainnya agar tokomu tetap aktif dan terpercaya."
       currentHref="/seller-center/kebijakan"

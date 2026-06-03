@@ -11,7 +11,7 @@ export const metadata = {
 export default function OngkirPengirimanPage() {
   return (
     <SellerCenterLayout
-      icon="🚢"
+      iconKey="ongkir"
       title="Ongkir & Pengiriman"
       subtitle="Panduan lengkap mengirim ikan dengan aman sampai ke tangan pembeli."
       currentHref="/seller-center/ongkir-pengiriman"

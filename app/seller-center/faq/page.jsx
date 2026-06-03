@@ -117,7 +117,7 @@ const faqs = [
 export default function FAQSellerPage() {
   return (
     <SellerCenterLayout
-      icon="❓"
+      iconKey="faq"
       title="FAQ Seller"
       subtitle="Jawaban atas pertanyaan yang paling sering ditanyakan oleh seller Bettazon."
       currentHref="/seller-center/faq"

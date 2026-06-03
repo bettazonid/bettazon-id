@@ -9,7 +9,7 @@ export const metadata = {
 export default function LelangPage() {
   return (
     <SellerCenterLayout
-      icon="🔨"
+      iconKey="lelang"
       title="Panduan Lelang"
       subtitle="Dua jenis lelang — halaman & live — untuk memaksimalkan harga jual ikanmu."
       currentHref="/seller-center/lelang"

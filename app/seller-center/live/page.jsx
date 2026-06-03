@@ -11,7 +11,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=id.bettazo
 export default function LivePage() {
   return (
     <SellerCenterLayout
-      icon="🎥"
+      iconKey="live"
       title="Panduan Live Streaming"
       subtitle="Jual ikan langsung ke ratusan pembeli — real-time, interaktif, dan lebih menguntungkan."
       currentHref="/seller-center/live"

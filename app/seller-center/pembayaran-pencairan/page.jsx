@@ -1,4 +1,5 @@
 import SellerCenterLayout from '@/components/SellerCenterLayout'
+import SellerCenterIcon from '@/components/seller-center/SellerCenterIcon'
 
 export const metadata = {
   title: 'Pembayaran & Pencairan – Seller Center Bettazon.id',
@@ -9,7 +10,7 @@ export const metadata = {
 export default function PembayaranPencairanPage() {
   return (
     <SellerCenterLayout
-      icon="💰"
+      iconKey="pembayaran"
       title="Pembayaran & Pencairan"
       subtitle="Dana kamu aman di escrow Bettazon — cair otomatis setelah pesanan selesai."
       currentHref="/seller-center/pembayaran-pencairan"
@@ -23,16 +24,16 @@ export default function PembayaranPencairanPage() {
         <div className="relative">
           <div className="space-y-0">
             {[
-              { icon: '💳', title: 'Pembeli Bayar', desc: 'Pembeli melakukan pembayaran via transfer bank, e-wallet, atau kartu kredit. Dana masuk ke rekening escrow Bettazon.' },
-              { icon: '📦', title: 'Seller Kirim', desc: 'Kamu mendapat notifikasi "Pesanan Dibayar". Packing ikan dan kirim dalam 48 jam. Input resi di aplikasi.' },
-              { icon: '🚀', title: 'Dalam Pengiriman', desc: 'Dana masih ditahan di escrow. Pembeli dapat melacak paket secara real-time.' },
-              { icon: '✅', title: 'Pembeli Konfirmasi', desc: 'Pembeli mengkonfirmasi pesanan diterima dalam kondisi baik. Atau otomatis dianggap diterima 3 hari setelah status "Terkirim".' },
-              { icon: '💰', title: 'Dana Cair ke Dompetmu', desc: 'Setelah konfirmasi, dana otomatis masuk ke saldo dompet Bettazon-mu. Siap dicairkan kapan saja.' },
-            ].map(({ icon, title, desc }, i) => (
+              { iconKey: 'credit-card', title: 'Pembeli Bayar', desc: 'Pembeli melakukan pembayaran via transfer bank, e-wallet, atau kartu kredit. Dana masuk ke rekening escrow Bettazon.' },
+              { iconKey: 'package', title: 'Seller Kirim', desc: 'Kamu mendapat notifikasi "Pesanan Dibayar". Packing ikan dan kirim dalam 48 jam. Input resi di aplikasi.' },
+              { iconKey: 'truck', title: 'Dalam Pengiriman', desc: 'Dana masih ditahan di escrow. Pembeli dapat melacak paket secara real-time.' },
+              { iconKey: 'check', title: 'Pembeli Konfirmasi', desc: 'Pembeli mengkonfirmasi pesanan diterima dalam kondisi baik. Atau otomatis dianggap diterima 3 hari setelah status "Terkirim".' },
+              { iconKey: 'banknotes', title: 'Dana Cair ke Dompetmu', desc: 'Setelah konfirmasi, dana otomatis masuk ke saldo dompet Bettazon-mu. Siap dicairkan kapan saja.' },
+            ].map(({ iconKey, title, desc }, i) => (
               <div key={title} className="flex gap-4 items-start">
                 <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-[#008080]/10 border-2 border-[#008080]/30 flex items-center justify-center text-lg flex-shrink-0">
-                    {icon}
+                  <div className="w-10 h-10 rounded-full bg-[#008080]/10 border-2 border-[#008080]/30 flex items-center justify-center text-[#008080] flex-shrink-0">
+                    <SellerCenterIcon name={iconKey} className="w-5 h-5" />
                   </div>
                   {i < 4 && <div className="w-0.5 h-6 bg-gray-200 my-1" />}
                 </div>

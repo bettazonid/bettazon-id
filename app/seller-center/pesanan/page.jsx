@@ -1,4 +1,5 @@
 import SellerCenterLayout from '@/components/SellerCenterLayout'
+import SellerCenterIcon from '@/components/seller-center/SellerCenterIcon'
 
 export const metadata = {
   title: 'Mengelola Pesanan – Seller Center Bettazon.id',
@@ -8,7 +9,7 @@ export const metadata = {
 
 const orderFlow = [
   {
-    icon: '🔔',
+    iconKey: 'bell',
     status: 'Pesanan Masuk',
     desc: 'Kamu mendapat notifikasi saat ada pembeli yang checkout. Buka aplikasi dan cek halaman "Pesanan" → tab "Baru".',
     time: 'Batas konfirmasi: 2×24 jam hari kerja',
@@ -16,35 +17,35 @@ const orderFlow = [
     timeColor: 'text-orange-500',
   },
   {
-    icon: '✅',
+    iconKey: 'check',
     status: 'Konfirmasi Pesanan',
     desc: 'Cek detail pesanan (produk, jumlah, alamat tujuan). Jika ikan tersedia dan siap kirim, tap "Terima Pesanan". Jika tidak bisa dipenuhi, tap "Tolak" dan isi alasan.',
     time: '',
     timeColor: '',
   },
   {
-    icon: '📦',
+    iconKey: 'package',
     status: 'Packing & Persiapan',
     desc: 'Pack ikan dengan aman (lihat tips packing di bawah). Setelah siap, serahkan ke kurir atau antar ke drop-off point.',
     time: 'Proses & kirim dalam 2×24 jam hari kerja (total)',
     timeColor: 'text-orange-500',
   },
   {
-    icon: '🚀',
+    iconKey: 'clipboard',
     status: 'Input Nomor Resi',
     desc: 'Setelah paket diserahkan ke kurir, masuk ke detail pesanan dan tap "Masukkan Resi". Isi nomor resi dan pilih kurir. Pembeli otomatis mendapat notifikasi.',
     time: '',
     timeColor: '',
   },
   {
-    icon: '📍',
+    iconKey: 'truck',
     status: 'Dalam Pengiriman',
     desc: 'Pembeli dapat melacak paket secara real-time. Kamu juga bisa cek status pengiriman dari halaman detail pesanan.',
     time: '',
     timeColor: '',
   },
   {
-    icon: '💰',
+    iconKey: 'banknotes',
     status: 'Pesanan Selesai & Dana Cair',
     desc: 'Pesanan selesai saat pembeli mengkonfirmasi penerimaan, atau otomatis 3 hari setelah paket diterima. Dana langsung masuk ke saldo dompetmu di Bettazon.',
     time: '',
@@ -55,7 +56,7 @@ const orderFlow = [
 export default function PesananPage() {
   return (
     <SellerCenterLayout
-      icon="🛒"
+      iconKey="pesanan"
       title="Mengelola Pesanan"
       subtitle="Dari notifikasi pesanan masuk sampai dana cair — semua ada di sini."
       currentHref="/seller-center/pesanan"
@@ -66,10 +67,10 @@ export default function PesananPage() {
         <div className="relative">
           <div className="absolute left-4 top-5 bottom-5 w-0.5 bg-gray-100 hidden sm:block" />
           <div className="space-y-5">
-            {orderFlow.map(({ icon, status, desc, time, timeColor, note }) => (
+            {orderFlow.map(({ iconKey, status, desc, time, timeColor, note }) => (
               <div key={status} className="flex gap-4 items-start relative">
-                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-teal-50 border-2 border-[#008080]/20 flex items-center justify-center text-lg z-10">
-                  {icon}
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-teal-50 border-2 border-[#008080]/20 flex items-center justify-center text-[#008080] z-10">
+                  <SellerCenterIcon name={iconKey} className="w-5 h-5" />
                 </div>
                 <div className="flex-1 pb-1">
                   <div className="flex items-center gap-3 flex-wrap mb-1">

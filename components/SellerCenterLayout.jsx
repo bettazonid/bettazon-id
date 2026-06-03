@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import SellerCenterIcon from '@/components/seller-center/SellerCenterIcon'
 
 const PAGES = [
   { href: '/seller-center/mulai-berjualan', label: 'Mulai Berjualan' },
@@ -15,7 +16,7 @@ const PAGES = [
 
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=id.bettazon.app'
 
-export default function SellerCenterLayout({ icon, title, subtitle, currentHref, children }) {
+export default function SellerCenterLayout({ iconKey, title, subtitle, currentHref, children }) {
   const idx = PAGES.findIndex((p) => p.href === currentHref)
   const prev = idx > 0 ? PAGES[idx - 1] : null
   const next = idx < PAGES.length - 1 ? PAGES[idx + 1] : null
@@ -65,7 +66,9 @@ export default function SellerCenterLayout({ icon, title, subtitle, currentHref,
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#008080] to-teal-700 text-white py-14 px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="text-5xl mb-4">{icon}</div>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 border border-white/30 mb-4">
+              <SellerCenterIcon name={iconKey} className="w-9 h-9 text-white" title={title} />
+            </div>
             <h1 className="text-3xl sm:text-4xl font-bold mb-3">{title}</h1>
             <p className="text-teal-100 text-base sm:text-lg">{subtitle}</p>
           </div>
