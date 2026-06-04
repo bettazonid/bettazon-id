@@ -37,6 +37,7 @@ const menus = [
   // ── Konten & Media ────────────────────────────────────────
   { group: 'Konten & Media' },
   { href: '/admin/music',                label: 'Musik Ambience Live',         icon: '🎵' },
+  { href: '/admin/healing-content',      label: 'Healing Content',             icon: '🌿' },
   { href: '/admin/storage',              label: 'Media Bucket',                icon: '🗄️' },
 
   // ── Komunikasi ────────────────────────────────────────────
