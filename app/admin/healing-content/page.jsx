@@ -32,6 +32,7 @@ const EMPTY_FORM = {
   mediaUrl: '',
   thumbnailKey: '',
   mediaKey: '',
+  backgroundAudioUrl: '',
   relatedProductIds: [],
   isFeatured: false,
   status: 'draft',
@@ -73,6 +74,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
           mediaUrl: item.mediaUrl || '',
           thumbnailKey: item.thumbnailKey || '',
           mediaKey: item.mediaKey || '',
+          backgroundAudioUrl: item.backgroundAudioUrl || '',
           relatedProductIds: normalizeRelatedProductIds(item.relatedProductIds),
           isFeatured: Boolean(item.isFeatured),
           status: item.status || 'draft',
@@ -120,6 +122,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
         mediaUrl: form.mediaUrl.trim() || null,
         thumbnailKey: form.thumbnailKey || null,
         mediaKey: form.mediaKey || null,
+        backgroundAudioUrl: form.backgroundAudioUrl.trim() || null,
         relatedProductIds: normalizeRelatedProductIds(form.relatedProductIds),
         isFeatured: form.isFeatured,
         status: form.status,
@@ -344,6 +347,19 @@ function ItemFormModal({ item, onClose, onSuccess }) {
             >
               {uploadingVideo ? 'Mengupload video...' : form.mediaUrl ? 'Ganti Video' : 'Upload Video'}
             </button>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Background Audio URL (opsional)</label>
+            <input
+              value={form.backgroundAudioUrl}
+              onChange={(e) => setForm((f) => ({ ...f, backgroundAudioUrl: e.target.value }))}
+              placeholder="https://cdn.../ambient.mp3"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Audio tenang diputar bersamaan dengan video di app. Kosongkan jika tidak diperlukan.
+            </p>
           </div>
 
           <div>
