@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { adminFetch, adminUpload } from '@/lib/adminApi'
+import { adminFetch, adminUpload, ADMIN_HEALING_UPLOAD } from '@/lib/adminApi'
 import HealingProductPicker from '@/components/admin/HealingProductPicker'
 const CATEGORY_LABELS = {
   aquascape: 'Aquascape',
@@ -162,7 +162,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
     setUploadingThumbnail(true)
     setError(null)
     try {
-      const result = await adminUpload('/api/admin/healing/upload/thumbnail', 'thumbnail', file)
+      const result = await adminUpload(ADMIN_HEALING_UPLOAD.thumbnail, 'thumbnail', file)
       const url = result.data?.thumbnailUrl || result.data?.url
       setForm((f) => ({ ...f, thumbnailUrl: url || f.thumbnailUrl, thumbnailKey: result.data?.thumbnailKey || f.thumbnailKey }))
     } catch (err) {
@@ -188,7 +188,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
     setVideoProgress(0)
     setError(null)
     try {
-      const result = await adminUpload('/api/admin/healing/upload/video', 'video', file, {
+      const result = await adminUpload(ADMIN_HEALING_UPLOAD.video, 'video', file, {
         onProgress: setVideoProgress,
       })
       const url = result.data?.mediaUrl || result.data?.url
