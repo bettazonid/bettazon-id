@@ -64,6 +64,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
   const isEdit = Boolean(item?.id)
   const thumbnailInputRef = useRef(null)
   const videoInputRef = useRef(null)
+  const audioInputRef = useRef(null)
   const [form, setForm] = useState(() =>
     item
       ? {
@@ -86,8 +87,10 @@ function ItemFormModal({ item, onClose, onSuccess }) {
   const [error, setError] = useState(null)
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [uploadingAudio, setUploadingAudio] = useState(false)
   const [videoProgress, setVideoProgress] = useState(0)
   const [videoMeta, setVideoMeta] = useState(null)
+  const [audioMeta, setAudioMeta] = useState(null)
   const [showManualUrls, setShowManualUrls] = useState(false)
 
   async function handleSubmit(e) {
@@ -106,7 +109,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
         return
       }
     }
-    if (uploadingThumbnail || uploadingVideo) {
+    if (uploadingThumbnail || uploadingVideo || uploadingAudio) {
       setError('Tunggu upload selesai sebelum menyimpan')
       return
     }
@@ -207,6 +210,37 @@ function ItemFormModal({ item, onClose, onSuccess }) {
       setUploadingVideo(false)
       setVideoProgress(0)
       if (videoInputRef.current) videoInputRef.current.value = ''
+    }
+  }
+
+  async function handleAudioUpload(file) {
+    if (!file) return
+    const name = file.name.toLowerCase()
+    const allowed = ['.mp3', '.aac', '.m4a']
+    if (!allowed.some((ext) => name.endsWith(ext))) {
+      setError('Format audio tidak valid. Gunakan MP3, AAC, atau M4A')
+      return
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setError('Audio terlalu besar. Maksimal 20 MB')
+      return
+    }
+
+    setUploadingAudio(true)
+    setError(null)
+    try {
+      const result = await adminUpload(ADMIN_HEALING_UPLOAD.audio, 'audio', file)
+      const url = result.data?.backgroundAudioUrl || result.data?.url
+      setForm((f) => ({ ...f, backgroundAudioUrl: url || f.backgroundAudioUrl }))
+      setAudioMeta({
+        fileName: result.data?.fileName || file.name,
+        fileSizeBytes: result.data?.fileSizeBytes || file.size,
+      })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setUploadingAudio(false)
+      if (audioInputRef.current) audioInputRef.current.value = ''
     }
   }
 
@@ -349,16 +383,64 @@ function ItemFormModal({ item, onClose, onSuccess }) {
             </button>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Background Audio URL (opsional)</label>
+          <div className="rounded-xl border border-gray-200 p-4 space-y-3">
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide">
+              Background Audio (opsional)
+            </label>
+            {form.backgroundAudioUrl ? (
+              <div className="rounded-lg border border-gray-100 bg-gray-50 p-3 space-y-2">
+                <audio src={form.backgroundAudioUrl} controls className="w-full" />
+                {(audioMeta?.fileName || form.backgroundAudioUrl) && (
+                  <div className="text-xs text-gray-500 space-y-1">
+                    {audioMeta?.fileName && <p>📁 {audioMeta.fileName}</p>}
+                    {audioMeta?.fileSizeBytes && <p>{formatBytes(audioMeta.fileSizeBytes)}</p>}
+                    {!audioMeta?.fileName && (
+                      <p className="truncate">{form.backgroundAudioUrl}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-full h-20 rounded-lg border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-sm text-gray-400">
+                Belum ada audio
+              </div>
+            )}
             <input
-              value={form.backgroundAudioUrl}
-              onChange={(e) => setForm((f) => ({ ...f, backgroundAudioUrl: e.target.value }))}
-              placeholder="https://cdn.../ambient.mp3"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30"
+              ref={audioInputRef}
+              type="file"
+              accept=".mp3,.aac,.m4a,audio/mpeg,audio/aac,audio/mp4"
+              className="hidden"
+              onChange={(e) => handleAudioUpload(e.target.files?.[0])}
             />
-            <p className="mt-1 text-xs text-gray-400">
-              Audio tenang diputar bersamaan dengan video di app. Kosongkan jika tidak diperlukan.
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={uploadingAudio}
+                onClick={() => audioInputRef.current?.click()}
+                className="px-3 py-2 rounded-lg bg-[#008080]/10 text-[#008080] text-sm font-medium hover:bg-[#008080]/20 disabled:opacity-50"
+              >
+                {uploadingAudio
+                  ? 'Mengupload audio...'
+                  : form.backgroundAudioUrl
+                    ? 'Ganti Audio'
+                    : 'Upload Audio'}
+              </button>
+              {form.backgroundAudioUrl && (
+                <button
+                  type="button"
+                  disabled={uploadingAudio}
+                  onClick={() => {
+                    setForm((f) => ({ ...f, backgroundAudioUrl: '' }))
+                    setAudioMeta(null)
+                  }}
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Hapus Audio
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-gray-400">
+              MP3, AAC, atau M4A (maks. 20 MB). Diputar otomatis di app bersama video.
             </p>
           </div>
 
@@ -390,6 +472,16 @@ function ItemFormModal({ item, onClose, onSuccess }) {
                   value={form.mediaUrl}
                   onChange={(e) => setForm((f) => ({ ...f, mediaUrl: e.target.value }))}
                   placeholder="https://cdn.../video.mp4"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Background Audio URL</label>
+                <input
+                  value={form.backgroundAudioUrl}
+                  onChange={(e) => setForm((f) => ({ ...f, backgroundAudioUrl: e.target.value }))}
+                  placeholder="https://cdn.../ambient.mp3"
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]/30"
                 />
               </div>
