@@ -60,6 +60,19 @@ function formatBytes(bytes) {
   return `${val.toFixed(i === 0 ? 0 : 1)} ${units[i]}`
 }
 
+function formatNum(n) {
+  if (n == null || Number.isNaN(n)) return '0'
+  return Number(n).toLocaleString('id-ID')
+}
+
+function formatDuration(seconds) {
+  const s = Math.max(0, Number(seconds) || 0)
+  if (s < 60) return `${s} dtk`
+  const m = Math.floor(s / 60)
+  const rem = s % 60
+  return `${m}:${String(rem).padStart(2, '0')}`
+}
+
 function ItemFormModal({ item, onClose, onSuccess }) {
   const isEdit = Boolean(item?.id)
   const thumbnailInputRef = useRef(null)
@@ -583,12 +596,40 @@ function ItemRow({ item, onEdit, onPublish, onArchive, onDelete, onToggleFeature
   )
 }
 
+function AnalyticsRow({ row }) {
+  return (
+    <tr className="hover:bg-gray-50 transition-colors">
+      <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.title}</td>
+      <td className="px-4 py-3 text-sm text-gray-700 tabular-nums">{formatNum(row.viewCount)}</td>
+      <td className="px-4 py-3 text-sm text-gray-700 tabular-nums">{formatNum(row.watchCount)}</td>
+      <td className="px-4 py-3 text-sm text-gray-700 tabular-nums">{formatDuration(row.averageWatchDuration)}</td>
+      <td className="px-4 py-3 text-sm text-gray-700 tabular-nums">{formatNum(row.productClickCount)}</td>
+    </tr>
+  )
+}
+
 export default function HealingContentPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
+  const [analytics, setAnalytics] = useState([])
+  const [analyticsLoading, setAnalyticsLoading] = useState(true)
+  const [analyticsError, setAnalyticsError] = useState(null)
+
+  const loadAnalytics = useCallback(async () => {
+    setAnalyticsLoading(true)
+    setAnalyticsError(null)
+    try {
+      const data = await adminFetch('/api/healing/admin/analytics')
+      setAnalytics(data.data?.items || [])
+    } catch (e) {
+      setAnalyticsError(e.message)
+    } finally {
+      setAnalyticsLoading(false)
+    }
+  }, [])
 
   const loadItems = useCallback(async () => {
     setLoading(true)
@@ -603,7 +644,10 @@ export default function HealingContentPage() {
     }
   }, [])
 
-  useEffect(() => { loadItems() }, [loadItems])
+  useEffect(() => {
+    loadItems()
+    loadAnalytics()
+  }, [loadItems, loadAnalytics])
 
   function handleFormSuccess(saved) {
     setItems((prev) => {
@@ -717,6 +761,59 @@ export default function HealingContentPage() {
             </table>
           </div>
         )}
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">📊 Analytics</h2>
+            <p className="text-sm text-gray-500 mt-0.5">Performa konten healing di app</p>
+          </div>
+          <button
+            onClick={loadAnalytics}
+            disabled={analyticsLoading}
+            className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Refresh
+          </button>
+        </div>
+
+        {analyticsError && (
+          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
+            ⚠️ {analyticsError}
+          </div>
+        )}
+
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          {analyticsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-[#008080]" />
+            </div>
+          ) : analytics.length === 0 ? (
+            <div className="text-center py-12 text-gray-400 text-sm">
+              Belum ada data analytics.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Title</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Views</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Watch Count</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Average Duration</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Product Clicks</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {analytics.map((row) => (
+                    <AnalyticsRow key={row.id} row={row} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
       {showForm && (
