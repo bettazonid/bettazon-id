@@ -24,6 +24,8 @@ const STATUS_STYLE = {
   archived: 'bg-orange-100 text-orange-700',
 }
 
+const MAX_HEALING_VIDEO_BYTES = 30 * 1024 * 1024
+
 const EMPTY_FORM = {
   title: '',
   description: '',
@@ -195,8 +197,8 @@ function ItemFormModal({ item, onClose, onSuccess }) {
       setError('Format video tidak valid. Gunakan MP4')
       return
     }
-    if (file.size > 100 * 1024 * 1024) {
-      setError('Video terlalu besar. Maksimal 100 MB')
+    if (file.size > MAX_HEALING_VIDEO_BYTES) {
+      setError('Video terlalu besar. Maksimal 30 MB')
       return
     }
 
@@ -394,6 +396,7 @@ function ItemFormModal({ item, onClose, onSuccess }) {
             >
               {uploadingVideo ? 'Mengupload video...' : form.mediaUrl ? 'Ganti Video' : 'Upload Video'}
             </button>
+            <p className="text-xs text-gray-400">MP4 (maks. 30 MB)</p>
           </div>
 
           <div className="rounded-xl border border-gray-200 p-4 space-y-3">
